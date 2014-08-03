@@ -1,0 +1,31 @@
+[user]
+	name = Edward Paget
+	email = edward@cassetteta.pe 
+[core]
+	editor = vim
+	excludesfile = /home/edward/.gitignore_global
+[push]
+	defualt = matching
+	default = matching
+[grep]
+	extendRegexp = true
+	lineNumber = true
+[diff]
+	external = vimdiff
+[merge]
+	tool = vimdiff
+[alias]
+	co = checkout
+	c = commit
+	s = status
+	a = add
+	br = branch
+	p = pull
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+[filter "media"]
+	clean = git-media-clean %f
+	smudge = git-media-smudge %f
+[github]
+	user = edpaget
+[init]
+	templatedir = ~/.git_template
