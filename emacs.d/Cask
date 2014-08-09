@@ -1,3 +1,12 @@
+(source gnu)
 (source melpa)
+(source org)
 
+(depends-on "evil")
+(depends-on "evil-god-state")
+(depends-on "evil-leader")
+(depends-on "evil-numbers")
+(depends-on "evil-surround")
+(depends-on "magit")
 (depends-on "pallet")
+(depends-on "use-package")

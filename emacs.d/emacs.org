@@ -1,0 +1,296 @@
+#+TITLE: Ed's Emacs Configuration
+#+AUTHOR: Ed Paget
+
+* Rationale
+
+  I love vim, but I also like the whole Emacs ecosystem. Hopefully with this config I can get the best of both, and never have to type into a non-modal editor. 
+
+  This is pretty much a ripoff of [[https://github.com/noahfrederick/dots/blob/master/emacs.d/emacs.org][Noah Frederick's emacs.org]], but with more Ruby/Rails, Clojure, and Java configuration. 
+
+* Finding on the Internet
+
+  I keep all of my dotfiles, including this emacs config, in my [[https://github.com/edpaget/dotfiles/][dotfiles repo]] on GitHub.
+
+* Installation
+  You should be able to install based solely on what's in this repo. I use [[https://github.com/cask/cask][Cask]] and [[https://github.com/rdallasgray/pallet][Pallet]] to manage dependencies.
+
+** Requirements
+
+  - Emacs 24 or Later
+  - [[https://github.com/cask/cask][Cask]]
+  - Ruby with Rake installed (any version should be fine)
+  - Only tested on Linux (Debian 7 and Ubuntu 14.04)
+
+** Install Command
+
+  =git clone https://github.com/edpaget/dotfiles && cd dotfiles && rake install && cd ~/.emacs.d && cask install=
+
+* Conventions
+
+  I'll preface any variables I introduce with an =ed/= to make them stand out from built-ins and functions defined in plug-ins
+
+* Package Configuration
+
+  I'm going to use [[https://github.com/jwiegley/use-package][use-package]] to autoload and configure packages. Mostly because it seems pretty swag.
+
+  #+NAME: init-before
+  #+BEGIN_SRC emacs-lisp :tangle yes
+    (require 'use-package)
+  #+END_SRC
+
+* Emacs Configuration
+
+** Paths
+
+   Keep any Elisp files not installed from a package repository in the
+   =vendor/= directory:
+
+   #+NAME: init-before
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (defvar nox/vendor-directory (concat user-emacs-directory "vendor/"))
+     (add-to-list 'load-path nox/vendor-directory)
+   #+END_SRC
+
+   Keep theme files in the =themes/= directory:
+
+   #+NAME: init-before
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq custom-theme-directory (concat user-emacs-directory "themes/"))
+   #+END_SRC
+
+   Keep temporary files in a separate directory:
+
+   #+NAME: init-before
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (defvar nox/ephemeral-directory "~/.emacs.ephemeral/")
+     (unless (file-exists-p nox/ephemeral-directory)
+       (mkdir nox/ephemeral-directory))
+   #+END_SRC
+
+** UI
+  
+   Hide parts of the GUI that we don't need, namely the graphical tool
+   bar and any scroll bars.
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+     (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+   #+END_SRC
+
+   Load the theme, which determines colors and font variants. Enox is
+   a medium-contrast theme with a dark background.
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (load-theme 'enox t)
+   #+END_SRC
+
+   We also set the font while specifying a couple fallbacks. The last
+   argument of ~set-frame-font~ ensures that new frames inherit the font
+   as well.
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (cond
+      ((find-font (font-spec :name "Input Mono Narrow"))
+       (set-frame-font "Input Mono Narrow-8" t t))
+      ((find-font (font-spec :name "Panic Sans"))
+       (set-frame-font "Panic Sans-14" t t))
+      ((find-font (font-spec :name "courier"))
+       (set-frame-font "courier-14" t t)))
+   #+END_SRC
+
+   Highlight the current line.
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (global-hl-line-mode)
+   #+END_SRC
+
+   GUI Emacs windows default to a tiny size. Usually, I want the
+   window to fill the screen:
+
+   #+BEGIN_QUOTE
+     The developer build of Emacs Trunk has a function called
+     ~toggle-frame-maximized~, which is included within
+     =.../lisp/frame.el=. That function can be added to the
+     ~after-init-hook~ or ~emacs-startup-hook~, or simply included in the
+     =.emacs= file that gets loaded on startup. On OSX, it increases
+     both width and height in one-fell-swoop.
+   #+END_QUOTE
+
+   Source: http://stackoverflow.com/a/18711628
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (if (fboundp 'toggle-frame-maximized)
+         (add-hook 'emacs-startup-hook 'toggle-frame-maximized))
+   #+END_SRC
+
+   Suppress the theme's background color and Emacs's menu bar in
+   terminal frames:
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (defun nox/after-make-frame (frame)
+       (unless (display-graphic-p frame)
+         (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+         (set-face-background 'default "dummy-color" frame)))
+
+     (add-hook 'after-make-frame-functions 'nox/after-make-frame)
+   #+END_SRC
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq ring-bell-function 'ignore)
+     (setq inhibit-startup-screen t)
+
+     ;; Set message for *scratch* buffer
+     (setq initial-scratch-message ";; Hello, Nox.\n")
+
+     ;; Use ANSI color in shell
+     (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+     ;; Never require full word answers
+     (defalias 'yes-or-no-p 'y-or-n-p)
+
+     (setq linum-format "%4d ")
+     (add-hook 'prog-mode-hook 'linum-mode)
+   #+END_SRC
+
+** Evil
+
+   Let's set this first because I can't type another sentance with filling it with hjkls.
+
+    Evil mode is a minor mode providing Vim emulation for Emacs. It
+   reproduces Vim's modal editing and even certain Ex commands.
+
+   Evil Leader mode provides something like Vim's =<Leader>=, which is
+   set to =,= below. Here are the conventions used throughout the
+   configuration around "namespacing" sets of commands bound to the
+   leader key:
+
+   | Key | Description                 |
+   |-----+-----------------------------|
+   | =g=   | Git functions (via Magit)   |
+   | =h=   | Helm commands               |
+   | =o=   | Option (minor-mode) toggles |
+   | =r=   | Global Org mode functions   |
+
+   (Evil Leader mode has to be initialized before Evil mode to work
+   around [[https://github.com/cofi/evil-leader/issues/10][a limitation]].)
+
+   #+NAME: evil
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package evil
+       :pre-load
+       (setq evil-want-C-u-scroll t
+             evil-want-C-w-in-emacs-state t)
+       :init
+       (progn
+         (use-package evil-leader
+           :init
+           (progn
+             (evil-leader/set-leader ",")
+             (global-evil-leader-mode 1)
+
+             (evil-leader/set-key
+               "SPC" 'smex
+               "b" 'ido-switch-buffer
+               "B" 'ibuffer
+               "d" 'projectile-find-dir
+               "D" 'dired
+               "e" 'ido-find-file
+               "f" 'projectile-find-file
+               "k" 'kill-this-buffer
+               "K" 'dash-at-point
+               "p" 'projectile-switch-project
+               "P" 'paradox-list-packages
+               "s" 'ansi-term
+               "u" 'undo-tree-visualize
+               "w" 'whitespace-cleanup
+               ;; Option toggle
+               "o l" 'whitespace-mode
+               "o n" 'linum-mode
+               "o q" 'auto-fill-mode
+               "o w" 'toggle-truncate-lines)))
+
+         (use-package evil-numbers
+           :config
+           (progn
+             (define-key evil-normal-state-map "+" 'evil-numbers/inc-at-pt)
+             (define-key evil-normal-state-map "_" 'evil-numbers/dec-at-pt))))
+       :config
+       (progn
+         (setq evil-default-cursor '("DodgerBlue1" box)
+               evil-normal-state-cursor '("white" box)
+               evil-emacs-state-cursor '("pink" box)
+               evil-motion-state-cursor '("green" box)
+               evil-insert-state-cursor '("white" bar)
+               evil-visual-state-cursor '("white" hbar)
+               evil-replace-state-cursor '("orange" hbar))
+
+         (evil-mode 1)
+
+         ;; Override the starting state in a few major modes
+         (evil-set-initial-state 'magit-mode 'emacs)
+         (evil-set-initial-state 'org-agenda-mode 'emacs)
+         (evil-set-initial-state 'package-menu-mode 'motion)
+         (evil-set-initial-state 'paradox-menu-mode 'motion)
+
+         ;; Reclaim useful keys from evil-motion-state-map
+         (define-key evil-motion-state-map (kbd "RET") nil)
+         (define-key evil-motion-state-map (kbd "TAB") nil)
+
+         (global-set-key (kbd "RET") 'newline-and-indent)
+         (define-key minibuffer-local-map (kbd "C-w") 'backward-kill-word)
+
+         (define-key evil-motion-state-map "j" 'evil-next-visual-line)
+         (define-key evil-motion-state-map "k" 'evil-previous-visual-line)
+         (define-key evil-normal-state-map "Y" (kbd "y$"))
+
+         ;; Commentary.vim
+         (use-package evil-operator-comment
+           :init
+           (global-evil-operator-comment-mode 1))
+
+         ;; Vinegar.vim
+         (autoload 'dired-jump "dired-x"
+           "Jump to Dired buffer corresponding to current buffer." t)
+         (define-key evil-normal-state-map "-" 'dired-jump)
+         (evil-define-key 'normal dired-mode-map "-" 'dired-up-directory)
+
+         ;; Unimpaired.vim
+         (define-key evil-normal-state-map (kbd "[ SPC")
+           (lambda () (interactive) (evil-insert-newline-above) (forward-line)))
+         (define-key evil-normal-state-map (kbd "] SPC")
+           (lambda () (interactive) (evil-insert-newline-below) (forward-line -1)))
+         (define-key evil-normal-state-map (kbd "[ e") (kbd "ddkP"))
+         (define-key evil-normal-state-map (kbd "] e") (kbd "ddp"))
+         (define-key evil-normal-state-map (kbd "[ b") 'previous-buffer)
+         (define-key evil-normal-state-map (kbd "] b") 'next-buffer)))
+   #+END_SRC
+
+   Additionally, let's make =ESC= work more or less like it does in Vim.
+
+   #+NAME: evil
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     ;; Escape minibuffer
+     (defun nox/minibuffer-keyboard-quit ()
+       "Abort recursive edit.
+
+     In Delete Selection mode, if the mark is active, just deactivate it;
+     then it takes a second \\[keyboard-quit] to abort the minibuffer."
+       (interactive)
+       (if (and delete-selection-mode transient-mark-mode mark-active)
+           (setq deactivate-mark t)
+         (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+         (abort-recursive-edit)))
+
+     (define-key minibuffer-local-map [escape] 'nox/minibuffer-keyboard-quit)
+     (define-key minibuffer-local-ns-map [escape] 'nox/minibuffer-keyboard-quit)
+     (define-key minibuffer-local-completion-map [escape] 'nox/minibuffer-keyboard-quit)
+     (define-key minibuffer-local-must-match-map [escape] 'nox/minibuffer-keyboard-quit)
+     (define-key minibuffer-local-isearch-map [escape] 'nox/minibuffer-keyboard-quit)
+   #+END_SRC
