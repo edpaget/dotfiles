@@ -2,6 +2,7 @@
 (source melpa)
 (source org)
 
+(depends-on "enh-ruby-mode")
 (depends-on "evil")
 (depends-on "evil-god-state")
 (depends-on "evil-leader")
@@ -9,4 +10,7 @@
 (depends-on "evil-surround")
 (depends-on "magit")
 (depends-on "pallet")
+(depends-on "rinari")
+(depends-on "rspec-mode")
+(depends-on "rvm")
 (depends-on "use-package")

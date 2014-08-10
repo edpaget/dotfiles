@@ -294,3 +294,6 @@
      (define-key minibuffer-local-must-match-map [escape] 'nox/minibuffer-keyboard-quit)
      (define-key minibuffer-local-isearch-map [escape] 'nox/minibuffer-keyboard-quit)
    #+END_SRC
+** Ruby
+
+   I like Enhanced Ruby Mode, as well as RSpec mode and 

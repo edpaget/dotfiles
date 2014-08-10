@@ -16,3 +16,5 @@ fi
 if [ -e "$HOME/.bash/aliases" ] ; then
   source "$HOME/.bash/aliases"
 fi
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
