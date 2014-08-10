@@ -1,3 +1,4 @@
 .ruby-version
 emacs.d/.cask/*
 emacs.d/emacs.el
+/emacs.d/auto-save-list/
