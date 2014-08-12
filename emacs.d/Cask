@@ -13,4 +13,5 @@
 (depends-on "rinari")
 (depends-on "rspec-mode")
 (depends-on "rvm")
+(depends-on "scala-mode2")
 (depends-on "use-package")

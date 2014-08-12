@@ -295,51 +295,13 @@
      (define-key minibuffer-local-isearch-map [escape] 'nox/minibuffer-keyboard-quit)
    #+END_SRC
 
-** Ruby
-
-   I like Enhanced Ruby Mode, as well as RSpec mode and Rinari.
-
-   
-   #+NAME: ruby
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (defun ruby-insert-end ()
-       "Insert \"end\" at point and reindent current line."
-       (interactive)
-       (insert "end")
-       (ruby-indent-line t)
-       (end-of-line))
-
-     (use-package enh-ruby-mode
-       :mode (("\\.rake$" . enh-ruby-mode)
-              ("\\.gemspec$" . enh-ruby-mode)
-	      ("\\.ru$" . enh-ruby-mode)
-	      ("Rakefile$" . enh-ruby-mode)
-	      ("Gemfile" . enh-ruby-mode)
-	      ("Capfile" . enh-ruby-mode)
-	      ("Guardfile" . enh-ruby-mode))
-       :init (progn
-	       (use-package rvm)
-	       (use-package rinari)
-	       (use-package rspec-mode
-	         :init (evil-leader/set-key-for-mode 'enh-ruby-mode
-	                 "v" 'rspec-verify
-	                 "a" 'rspec-verify-all
-	                 "s" 'rspec-toggle-spec-and-target
-	                 "i" 'rspec-rerun
-	                 "m" 'rspec-verify-matching
-	                 "c" 'rspec-verify-continue))
-	       (use-package ruby-electric)
-	       (setenv "JRUBY_OPTS" "--2.0")
-	       (evil-define-key 'insert enh-ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
-    #+END_SRC
-
 ** Version Control and History
 
    Undo tree provides a Vim-like branching undo history that can be
    visualized and traversed in another window.
 
    #+NAME: editing
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package undo-tree
        :config
        (setq undo-tree-visualizer-diff t
@@ -349,7 +311,7 @@
    Magit provides featureful Git integration.
 
    #+NAME: editing
-   #+BEGIN_SRC emacs-lisp :tangle no
+   #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package magit
        :commands (magit-status magit-diff magit-log magit-blame-mode)
        :init
@@ -367,5 +329,50 @@
          (evil-define-key 'emacs magit-mode-map "K" 'magit-discard-item))) ; k
    #+END_SRC
 	       
+** Ruby
 
-	      
+   I like Enhanced Ruby Mode, as well as RSpec mode and Rinari.
+
+   
+   #+NAME: ruby
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (defun ruby-insert-end ()
+       "Insert \"end\" at point and reindent current line."
+       (interactive)
+       (insert "end")
+       (ruby-indent-line t)
+       (end-of-line))
+     
+     (use-package enh-ruby-mode
+       :mode (("\\.rake$" . enh-ruby-mode)
+              ("\\.gemspec$" . enh-ruby-mode)
+              ("\\.ru$" . enh-ruby-mode)
+              ("Rakefile$" . enh-ruby-mode)
+              ("Gemfile" . enh-ruby-mode)
+              ("Capfile" . enh-ruby-mode)
+              ("Guardfile" . enh-ruby-mode)
+              ("Vagrantfile" . enh-ruby-mode))
+       :init (progn
+               (use-package rvm)
+               (use-package rinari)
+               (use-package rspec-mode
+                 :init (evil-leader/set-key-for-mode 'enh-ruby-mode
+                         "r v" 'rspec-verify
+                         "r a" 'rspec-verify-all
+                         "r s" 'rspec-toggle-spec-and-target
+                         "r i" 'rspec-rerun
+                         "r m" 'rspec-verify-matching
+                         "r c" 'rspec-verify-continue))
+               (use-package ruby-electric)
+               (setenv "JRUBY_OPTS" "--2.0")
+               (evil-define-key 'insert enh-ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
+    #+END_SRC
+   
+** Scala
+
+   #+NAME: scala
+   #+BEGIN_SRC emacs-lisp :tangle yes
+       (use-package scala-mode2)
+   #+END_SRC
+
+
