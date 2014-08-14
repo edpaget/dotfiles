@@ -375,4 +375,17 @@
        (use-package scala-mode2)
    #+END_SRC
 
+** Ido
 
+   #+NAME: scala
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package flx-ido
+       :init (progn
+              (ido-mode 1)
+              (ido-everywhere 1)
+              (flx-ido-mode 1))
+       :config (progn
+                (setq ido-enable-flex-matching t)
+                (setq ido-use-faces nil)))
+   #+END_SRC
+   

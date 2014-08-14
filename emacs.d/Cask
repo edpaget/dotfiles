@@ -8,6 +8,7 @@
 (depends-on "evil-leader")
 (depends-on "evil-numbers")
 (depends-on "evil-surround")
+(depends-on "flx-ido")
 (depends-on "magit")
 (depends-on "pallet")
 (depends-on "rinari")
