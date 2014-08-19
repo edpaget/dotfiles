@@ -355,7 +355,6 @@
        :init (progn
                (use-package rvm)
                (use-package rinari)
-               (use-package ruby-electric)
                (use-package rspec-mode
                  :init (evil-leader/set-key-for-mode 'enh-ruby-mode
                          "r v" 'rspec-verify
@@ -366,6 +365,10 @@
                          "r c" 'rspec-verify-continue))
                (setenv "JRUBY_OPTS" "--2.0")
                (evil-define-key 'insert enh-ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
+     
+     (use-package ruby-electric
+       :config (add-hook 'enh-ruby-mode-hook 'ruby-electric-mode))
+     
     #+END_SRC
    
 ** Scala
