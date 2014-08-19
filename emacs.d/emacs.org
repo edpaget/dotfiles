@@ -173,10 +173,10 @@
 
    | Key | Description                 |
    |-----+-----------------------------|
-   | =g=   | Git functions (via Magit)   |
-   | =h=   | Helm commands               |
-   | =o=   | Option (minor-mode) toggles |
-   | =r=   | Global Org mode functions   |
+   | =g= | Git functions (via Magit)   |
+   | =h= | Helm commands               |
+   | =o= | Option (minor-mode) toggles |
+   | =r= | Ruby mode functions         |
 
    (Evil Leader mode has to be initialized before Evil mode to work
    around [[https://github.com/cofi/evil-leader/issues/10][a limitation]].)
@@ -294,7 +294,7 @@
      (define-key minibuffer-local-must-match-map [escape] 'nox/minibuffer-keyboard-quit)
      (define-key minibuffer-local-isearch-map [escape] 'nox/minibuffer-keyboard-quit)
    #+END_SRC
-
+   
 ** Version Control and History
 
    Undo tree provides a Vim-like branching undo history that can be
@@ -355,6 +355,7 @@
        :init (progn
                (use-package rvm)
                (use-package rinari)
+               (use-package ruby-electric)
                (use-package rspec-mode
                  :init (evil-leader/set-key-for-mode 'enh-ruby-mode
                          "r v" 'rspec-verify
@@ -363,7 +364,6 @@
                          "r i" 'rspec-rerun
                          "r m" 'rspec-verify-matching
                          "r c" 'rspec-verify-continue))
-               (use-package ruby-electric)
                (setenv "JRUBY_OPTS" "--2.0")
                (evil-define-key 'insert enh-ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
     #+END_SRC
@@ -377,7 +377,7 @@
 
 ** Ido
 
-   #+NAME: scala
+   #+NAME: ido
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package flx-ido
        :init (progn
@@ -389,3 +389,11 @@
                 (setq ido-use-faces nil)))
    #+END_SRC
    
+** Projectile
+
+   #+NAME: projectile
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (use-package projectile
+       :init (projectile-global-mode)
+       :config (setq projectile-enable-caching t))
+   #+END_SRC
