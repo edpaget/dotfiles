@@ -439,6 +439,16 @@
         (use-package scala-mode2)
     #+END_SRC
 
+*** Markdown
+
+    #+NAME markdown
+    #+BEGIN_SRC emacs-lisp tangle: yes
+         (use-package markdown-mode
+           :mode (("\\.md$" . markdown-mode)
+                  ("\\.markdown$" . markdown-mode)
+                  ("\\.apib" . markdown-mode)))
+    #+END_SRC
+    
 ** Ido
 
    #+NAME: ido
