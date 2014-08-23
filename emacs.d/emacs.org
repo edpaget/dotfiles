@@ -451,24 +451,26 @@
     
 *** Javascript
 
-    #+NAME: javascript :tangle
-    #+BEGIN_SRC emacs-lisp 
+    #+NAME: javascript
+    #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package js2-mode
         :mode (("\\.js$" . js2-mode)
-               ("\\.json" . js2-mode)))
+               ("\\.json" . js2-mode)
+               ("\\.jsx" . js2-mode)
+               ("\\.cjsx" . js2-mode)))
     #+END_SRC
 
 *** Coffeescript
     
-    #+NAME: coffeescript :tangle yes
-    #+BEGIN_SRC emacs-lisp
+    #+NAME: coffeescript
+    #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package coffee-mode
         :mode (("\\.coffee$" . coffee-mode)))
     #+END_SRC
 *** Webmode
     
-    #+NAME: webmode :tangle yes
-    #+BEGIN_SRC emacs-lisp
+    #+NAME: webmode
+    #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package web-mode
         :mode (("\\.html?\\'" . web-mode)
                ("\\.css\\'" . web-mode)
