@@ -3,6 +3,7 @@
 (source org)
 
 (depends-on "bundler")
+(depends-on "coffee-mode")
 (depends-on "dtrt-indent")
 (depends-on "enh-ruby-mode")
 (depends-on "evil")
@@ -12,6 +13,7 @@
 (depends-on "evil-paredit")
 (depends-on "evil-surround")
 (depends-on "flx-ido")
+(depends-on "js2-mode")
 (depends-on "magit")
 (depends-on "markdown-mode")
 (depends-on "pallet")
@@ -24,3 +26,4 @@
 (depends-on "rvm")
 (depends-on "scala-mode2")
 (depends-on "use-package")
+(depends-on "web-mode")

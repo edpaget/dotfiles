@@ -441,14 +441,43 @@
 
 *** Markdown
 
-    #+NAME markdown
-    #+BEGIN_SRC emacs-lisp tangle: yes
+    #+NAME: markdown
+    #+BEGIN_SRC emacs-lisp :tangle yes
          (use-package markdown-mode
            :mode (("\\.md$" . markdown-mode)
                   ("\\.markdown$" . markdown-mode)
                   ("\\.apib" . markdown-mode)))
     #+END_SRC
     
+*** Javascript
+
+    #+NAME: javascript :tangle
+    #+BEGIN_SRC emacs-lisp 
+      (use-package js2-mode
+        :mode (("\\.js$" . js2-mode)
+               ("\\.json" . js2-mode)))
+    #+END_SRC
+
+*** Coffeescript
+    
+    #+NAME: coffeescript :tangle yes
+    #+BEGIN_SRC emacs-lisp
+      (use-package coffee-mode
+        :mode (("\\.coffee$" . coffee-mode)))
+    #+END_SRC
+*** Webmode
+    
+    #+NAME: webmode :tangle yes
+    #+BEGIN_SRC emacs-lisp
+      (use-package web-mode
+        :mode (("\\.html?\\'" . web-mode)
+               ("\\.css\\'" . web-mode)
+               ("\\.mustache\\'" . web-mode)
+               ("\\.erb\\'" . web-mode))
+        :init
+        (add-hook 'web-mode-hook (lambda ()
+                                   (set-fill-column 120))))
+    #+END_SRC
 ** Ido
 
    #+NAME: ido
