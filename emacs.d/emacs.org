@@ -450,22 +450,29 @@
     #+END_SRC
     
 *** Javascript
-
+    
     #+NAME: javascript
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (use-package js2-mode
-        :mode (("\\.js$" . js2-mode)
-               ("\\.json" . js2-mode)
-               ("\\.jsx" . js2-mode)
-               ("\\.cjsx" . js2-mode)))
+            (use-package js2-mode
+              :mode (("\\.js$" . js2-mode)
+                     ("\\.json" . js2-mode)))
     #+END_SRC
-
+    
 *** Coffeescript
     
     #+NAME: coffeescript
     #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package coffee-mode
-        :mode (("\\.coffee$" . coffee-mode)))
+        :mode (("\\.coffee$" . coffee-mode)
+               ("\\.cjsx" . coffee-mode))
+        :config (progn
+                  (setq whitespace-action '(auto-cleanup))
+                  (setq whitespace-style '(trailing
+                                           space-before-tab
+                                           indentation
+                                           empty
+                                           space-after-tab))
+                  (custom-set-variables '(coffee-tab-width 2))))
     #+END_SRC
 *** Webmode
     
