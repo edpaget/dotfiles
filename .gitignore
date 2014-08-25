@@ -4,3 +4,4 @@ emacs.d/emacs.el
 /emacs.d/auto-save-list/
 emacs.d/projectile*
 emacs.d/session.*
+lein/self-installs/

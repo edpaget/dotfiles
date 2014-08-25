@@ -3,6 +3,9 @@
 (source org)
 
 (depends-on "bundler")
+(depends-on "cider")
+(depends-on "clojure-mode")
+(depends-on "clojure-test-mode")
 (depends-on "coffee-mode")
 (depends-on "dtrt-indent")
 (depends-on "enh-ruby-mode")

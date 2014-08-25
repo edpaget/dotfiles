@@ -487,6 +487,19 @@
         (add-hook 'web-mode-hook (lambda ()
                                    (set-fill-column 120))))
     #+END_SRC
+*** Clojure
+
+    #+NAME clojure
+    #+BEGIN_SRC emacs-lisp :tangle yes
+         (use-package clojure-mode
+           :mode (("\\.clj" . clojure-mode))
+           :init (progn
+                   (use-package clojure-test-mode)
+                   (use-package cider
+                     :config (progn
+                               (setq nrepl-hide-special-buffers t)
+                               (add-hook 'cider-repl-mode-hook 'paredit-mode))))) 
+    #+END_SRC 
 ** Ido
 
    #+NAME: ido
