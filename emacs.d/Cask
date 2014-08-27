@@ -13,7 +13,6 @@
 (depends-on "evil-god-state")
 (depends-on "evil-leader")
 (depends-on "evil-numbers")
-(depends-on "evil-paredit")
 (depends-on "evil-surround")
 (depends-on "flx-ido")
 (depends-on "js2-mode")

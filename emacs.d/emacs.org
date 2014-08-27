@@ -377,16 +377,7 @@
                  (add-hook 'lisp-interaction-mode-hook 'paredit-mode)
                  (add-hook 'scheme-mode-hook 'paredit-mode)
                  (add-hook 'cider-repl-mode-hook 'paredit-mode)))
-     
-     (use-package paredit-evil
-       :config (progn
-                 (add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
-                 (add-hook 'eval-expression-minibuffer-setup-hook 'evil-paredit-mode)
-                 (add-hook 'ielm-mode-hook 'evil-paredit-mode)
-                 (add-hook 'lisp-mode-hook 'evil-paredit-mode)
-                 (add-hook 'lisp-interaction-mode-hook 'evil-paredit-mode)
-                 (add-hook 'scheme-mode-hook 'evil-paredit-mode)))
-   #+END_SRC
+  #+END_SRC
    
 ** Languages
 *** Ruby
