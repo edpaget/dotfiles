@@ -16,3 +16,6 @@ export PATH
 
 ### Locale
 export LANG=en_US.UTF-8
+
+### JRUBY
+export JRUBY_OPTS=--2.0
