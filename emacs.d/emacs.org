@@ -1,24 +1,24 @@
-#+TITLE: Ed's Emacs Configuration
+#+TITLE: ED'S Emacs Configuration
 #+AUTHOR: Ed Paget
 
 * Rationale
 
   I love vim, but I also like the whole Emacs ecosystem. Hopefully
   with this config I can get the best of both, and never have to type
-  into a non-modal editor.  
+  into a non-modal editor.
 
   This is pretty much a ripoff of [[https://github.com/noahfrederick/dots/blob/master/emacs.d/emacs.org][Noah Frederick's emacs.org]], but with
-  more Ruby/Rails, Clojure, and Java configuration.  
+  more Ruby/Rails, Clojure, and Java configuration.
 
 * Finding on the Internet
-  
+
   I keep all of my dotfiles, including this emacs config, in my
   [[https://github.com/edpaget/dotfiles/][dotfiles repo]] on GitHub.
-  
+
 * Installation
   You should be able to install based solely on what's in this
   repo. I use [[https://github.com/cask/cask][Cask]] and [[https://github.com/rdallasgray/pallet][Pallet]] to manage dependencies.
-  
+
 ** Requirements
 
   - Emacs 24 or Later
@@ -31,34 +31,34 @@
   =git clone https://github.com/edpaget/dotfiles && cd dotfiles && rake install && cd ~/.emacs.d && cask install=
 
 * Conventions
-  
+
   I'll preface any variables I introduce with an =ed/= to make
   them stand out from built-ins and functions defined in plug-ins
-  
-  
+
+
   Evil Leader mode provides something like Vim's =<Leader>=, which is
   set to =,= below. Here are the conventions used throughout the
   configuration around "namespacing" sets of commands bound to the
   leader key:
-  
+
   | Key | Description                 |
   |-----+-----------------------------|
   | =g= | Git functions (via Magit)   |
   | =o= | Option (minor-mode) toggles |
   | =r= | Ruby/Rails mode functions   |
-  
+
 * Package Configuration
-  
+
   I'm going to use [[https://github.com/jwiegley/use-package][use-package]] to autoload and configure
   packages. Mostly because it seems pretty swag.
-  
+
   #+NAME: init-before
   #+BEGIN_SRC emacs-lisp :tangle yes
     (require 'use-package)
   #+END_SRC
-  
+
 * Emacs Configuration
-  
+
 ** Paths
 
    Keep any Elisp files not installed from a package repository in the
@@ -87,7 +87,7 @@
    #+END_SRC
 
 ** UI
-  
+
    Hide parts of the GUI that we don't need, namely the graphical tool
    bar and any scroll bars.
 
@@ -179,29 +179,29 @@
    #+END_SRC
 
 ** Whitespace
-   
+
    #+NAME: white-space
    #+BEGIN_SRC emacs-lisp :tangle yes
      (setq-default indent-tabs-mode nil)
-     
+
      (use-package dtrt-indent
        :init (dtrt-indent-mode 1))
-     
+
      (setq comment-auto-fill-only-comments t)
      (add-hook 'text-mode-hook 'turn-on-auto-fill)
      (add-hook 'prog-mode-hook 'turn-on-auto-fill)
    #+END_SRC
-   
+
 ** Evil
-   
+
    Let's set this first because I can't type another sentance with
    filling it with hjkls.
-   
+
    Evil mode is a minor mode providing Vim emulation for Emacs. It
    reproduces Vim's modal editing and even certain Ex commands.
    (Evil Leader mode has to be initialized before Evil mode to work
    around [[https://github.com/cofi/evil-leader/issues/10][a limitation]].)
-   
+
    #+NAME: evil
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package evil
@@ -229,12 +229,15 @@
                      "P" 'paradox-list-packages
                      "s" 'ansi-term
                      "u" 'undo-tree-visualize
-                     "w" 'whitespace-cleanup
+                     ;; "w" 'whitespace-cleanup
                      ;; Option toggle
                      "o l" 'whitespace-mode
                      "o n" 'linum-mode
                      "o q" 'auto-fill-mode
-                     "o w" 'toggle-truncate-lines)))
+                     "o w" 'toggle-truncate-lines
+                     ;; winner-mode
+                     "w u" 'winner-undo
+                     "w r" 'winner-redo)))
      
                (use-package evil-numbers
                  :config
@@ -290,9 +293,9 @@
                  (define-key evil-normal-state-map (kbd "[ b") 'previous-buffer)
                  (define-key evil-normal-state-map (kbd "] b") 'next-buffer)))
    #+END_SRC
-   
+
    Additionally, let's make =ESC= work more or less like it does in Vim.
-   
+
    #+NAME: evil
    #+BEGIN_SRC emacs-lisp :tangle yes
      ;; Escape minibuffer
@@ -313,14 +316,14 @@
      (define-key minibuffer-local-must-match-map [escape] 'nox/minibuffer-keyboard-quit)
      (define-key minibuffer-local-isearch-map [escape] 'nox/minibuffer-keyboard-quit)
    #+END_SRC
-   
+
    #+NAME: evil
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package evil-god-state
        :commands evil-execute-in-god-state
       :init (evil-define-key 'normal global-map "\\" 'evil-execute-in-god-state))
    #+END_SRC
-   
+
 ** Version Control and History
 
    Undo tree provides a Vim-like branching undo history that can be
@@ -354,18 +357,18 @@
          (evil-define-key 'emacs magit-mode-map "k" 'magit-goto-previous-section)
          (evil-define-key 'emacs magit-mode-map "K" 'magit-discard-item))) ; k
    #+END_SRC
-	       
+
 ** Projectile
-   
+
    #+NAME: projectile
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package projectile
        :init (projectile-global-mode)
        :config (setq projectile-enable-caching t))
    #+END_SRC
-   
+
 ** Paredit
-   
+
    #+NAME: paredit
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package paredit
@@ -378,12 +381,12 @@
                  (add-hook 'scheme-mode-hook 'paredit-mode)
                  (add-hook 'cider-repl-mode-hook 'paredit-mode)))
   #+END_SRC
-   
+
 ** Languages
 *** Ruby
-    
-    I like Enhanced Ruby Mode. 
-    
+
+    I like Enhanced Ruby Mode.
+
     #+NAME: ruby
     #+BEGIN_SRC emacs-lisp :tangle yes
       (defun ruby-insert-end ()
@@ -392,10 +395,10 @@
         (insert "end")
         (ruby-indent-line t)
         (end-of-line))
-      
+
       (use-package projectile-rails
         :init (add-hook 'projectile-mode-hook 'projectile-rails-on))
-      
+
       (use-package enh-ruby-mode
         :mode (("\\.rake$" . enh-ruby-mode)
                ("\\.gemspec$" . enh-ruby-mode)
@@ -417,12 +420,12 @@
                             "r c" 'rspec-verify-continue))
                 (setenv "JRUBY_OPTS" "--2.0")
                 (evil-define-key 'insert enh-ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
-      
+
       (use-package ruby-electric
         :config (add-hook 'enh-ruby-mode-hook 'ruby-electric-mode))
-      
+
      #+END_SRC
-    
+
 *** Scala
 
     #+NAME: scala
@@ -439,18 +442,18 @@
                   ("\\.markdown$" . markdown-mode)
                   ("\\.apib" . markdown-mode)))
     #+END_SRC
-    
+
 *** Javascript
-    
+
     #+NAME: javascript
     #+BEGIN_SRC emacs-lisp :tangle yes
             (use-package js2-mode
               :mode (("\\.js$" . js2-mode)
                      ("\\.json" . js2-mode)))
     #+END_SRC
-    
+
 *** Coffeescript
-    
+
     #+NAME: coffeescript
     #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package coffee-mode
@@ -466,7 +469,7 @@
                   (custom-set-variables '(coffee-tab-width 2))))
     #+END_SRC
 *** Webmode
-    
+
     #+NAME: webmode
     #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package web-mode
@@ -489,8 +492,8 @@
                    (use-package cider
                      :config (progn
                                (setq nrepl-hide-special-buffers t)
-                               (add-hook 'cider-repl-mode-hook 'paredit-mode))))) 
-    #+END_SRC 
+                               (add-hook 'cider-repl-mode-hook 'paredit-mode)))))
+    #+END_SRC
 ** Ido
 
    #+NAME: ido
@@ -504,4 +507,12 @@
                 (setq ido-enable-flex-matching t)
                 (setq ido-use-faces nil)))
    #+END_SRC
-   
+
+** Winner-Mode
+
+   #+NAME: ido
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (progn
+       (when (fboundp 'winner-mode)
+         (winner-mode 1)))
+  #+END_SRC
