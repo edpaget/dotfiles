@@ -378,8 +378,8 @@
                  (add-hook 'ielm-mode-hook 'paredit-mode)
                  (add-hook 'lisp-mode-hook 'paredit-mode)
                  (add-hook 'lisp-interaction-mode-hook 'paredit-mode)
-                 (add-hook 'scheme-mode-hook 'paredit-mode)
-                 (add-hook 'cider-repl-mode-hook 'paredit-mode)))
+                 (add-hook 'clojure-mode-hook 'paredit-mode)
+                 (add-hook 'scheme-mode-hook 'paredit-mode)))
   #+END_SRC
 
 ** Languages
@@ -494,6 +494,7 @@
                                (setq nrepl-hide-special-buffers t)
                                (add-hook 'cider-repl-mode-hook 'paredit-mode)))))
     #+END_SRC
+
 ** Ido
 
    #+NAME: ido
