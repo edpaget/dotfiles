@@ -372,14 +372,23 @@
    #+NAME: paredit
    #+BEGIN_SRC emacs-lisp :tangle yes
      (use-package paredit
+       :init (progn
+               (evil-leader/set-key-for-mode 'clojure-mode
+                 ">" 'paredit-forward-barf-sexp
+                 "<" 'paredit-backward-barf-sexp
+                 "W" 'paredit-wrap-round
+                 "w [" 'paredit-wrap-square
+                 "w (" 'paredit-wrap-round
+                 "w {" 'paredit-wrap-curly))
        :config (progn
                  (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
                  (add-hook 'eval-expression-minibuffer-setup-hook 'paredit-mode)
                  (add-hook 'ielm-mode-hook 'paredit-mode)
                  (add-hook 'lisp-mode-hook 'paredit-mode)
                  (add-hook 'lisp-interaction-mode-hook 'paredit-mode)
-                 (add-hook 'clojure-mode-hook 'paredit-mode)
-                 (add-hook 'scheme-mode-hook 'paredit-mode)))
+                 (add-hook 'scheme-mode-hook 'paredit-mode)
+                 (add-hook 'cider-repl-mode-hook 'paredit-mode)
+                 (add-hook 'clojure-mode-hook 'paredit-mode)))
   #+END_SRC
 
 ** Languages
