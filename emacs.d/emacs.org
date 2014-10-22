@@ -374,7 +374,7 @@
      (use-package paredit
        :init (progn
                (evil-leader/set-key-for-mode 'clojure-mode
-                 ">" 'paredit-forward-barf-sexp
+                 ">" 'paredit-forward-slurp-sexp
                  "<" 'paredit-backward-barf-sexp
                  "W" 'paredit-wrap-round
                  "w [" 'paredit-wrap-square
@@ -497,7 +497,6 @@
          (use-package clojure-mode
            :mode (("\\.clj" . clojure-mode))
            :init (progn
-                   (use-package clojure-test-mode)
                    (use-package cider
                      :config (progn
                                (setq nrepl-hide-special-buffers t)
