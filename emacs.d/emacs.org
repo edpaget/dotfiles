@@ -70,13 +70,6 @@
      (add-to-list 'load-path nox/vendor-directory)
    #+END_SRC
 
-   Keep theme files in the =themes/= directory:
-
-   #+NAME: init-before
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (setq custom-theme-directory (concat user-emacs-directory "themes/"))
-   #+END_SRC
-
    Keep temporary files in a separate directory:
 
    #+NAME: init-before
@@ -97,12 +90,13 @@
      (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
    #+END_SRC
 
-   Load the theme, which determines colors and font variants. Enox is
-   a medium-contrast theme with a dark background.
+   Use Solarized Light as the the theme. Make gutters standout a
+   little more.
 
    #+NAME: appearance
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (load-theme 'enox t)
+     (load-theme 'solarized-light t)
+     (setq solarized-distinct-fringe-background t)
    #+END_SRC
 
    We also set the font while specifying a couple fallbacks. The last
@@ -112,7 +106,7 @@
    #+NAME: appearance
    #+BEGIN_SRC emacs-lisp :tangle yes
      (cond
-      ((find-font (font-spec :name "Input Mono Narrow"))
+      ((find-font (font-spec :name "Input Regular"))
        (set-frame-font "Input Mono Narrow-8" t t))
       ((find-font (font-spec :name "Droid Sans Mono"))
        (set-frame-font "Droid Sans Mono-8" t t))
@@ -164,16 +158,16 @@
    #+BEGIN_SRC emacs-lisp :tangle yes
      (setq ring-bell-function 'ignore)
      (setq inhibit-startup-screen t)
-
+     
      ;; Set message for *scratch* buffer
      (setq initial-scratch-message ";; Hello, Nox.\n")
-
+     
      ;; Use ANSI color in shell
      (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-
+     
      ;; Never require full word answers
      (defalias 'yes-or-no-p 'y-or-n-p)
-
+     
      (setq linum-format "%4d ")
      (add-hook 'prog-mode-hook 'linum-mode)
    #+END_SRC
@@ -246,7 +240,7 @@
                    (define-key evil-normal-state-map "_" 'evil-numbers/dec-at-pt))))
        :config (progn
                  (setq evil-default-cursor '("DodgerBlue1" box)
-                       evil-normal-state-cursor '("white" box)
+                       evil-normal-state-cursor '("black" box)
                        evil-emacs-state-cursor '("pink" box)
                        evil-motion-state-cursor '("green" box)
                        evil-insert-state-cursor '("white" bar)
@@ -516,7 +510,7 @@
                 (setq ido-enable-flex-matching t)
                 (setq ido-use-faces nil)))
    #+END_SRC
-
+   
 ** Winner-Mode
 
    #+NAME: ido

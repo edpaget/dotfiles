@@ -28,3 +28,4 @@
 (depends-on "scala-mode2")
 (depends-on "use-package")
 (depends-on "web-mode")
+(depends-on "solarized-theme")
