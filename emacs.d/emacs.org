@@ -59,6 +59,21 @@
 
 * Emacs Configuration
 
+** Backup and Autosave Files
+   Store backup and autosave files in the =/tmp/= direcotry
+   
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq make-backup-files nil) ; stop creating backup~ files
+     (setq auto-save-default nil) ; stop creating #autosave# files
+   #+END_SRC
+
+   Keep Eshell's temporary files out of the way:
+
+   #+NAME: init-after
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq eshell-directory-name (expand-file-name "eshell/" nox/ephemeral-directory))
+   #+END_SRC   
+
 ** Paths
 
    Keep any Elisp files not installed from a package repository in the
@@ -99,19 +114,15 @@
      (setq solarized-distinct-fringe-background t)
    #+END_SRC
 
-   We also set the font while specifying a couple fallbacks. The last
-   argument of ~set-frame-font~ ensures that new frames inherit the font
-   as well.
+   We also set the font while specifying a couple fallbacks.
 
    #+NAME: appearance
    #+BEGIN_SRC emacs-lisp :tangle yes
      (cond
-      ((find-font (font-spec :name "Input Regular"))
-       (set-frame-font "Input Mono Narrow-8" t t))
-      ((find-font (font-spec :name "Droid Sans Mono"))
-       (set-frame-font "Droid Sans Mono-8" t t))
-      ((find-font (font-spec :name "courier"))
-       (set-frame-font "courier-14" t t)))
+      ((find-font (font-spec :name "Input"))
+       (set-default-font "Input-8"))
+      ((fint-font (font-spec :name "Droid Sans Mono"))
+       (set-default-font "Droid Sans Mono-8")))
    #+END_SRC
 
    Highlight the current line.
@@ -171,7 +182,7 @@
      (setq linum-format "%4d ")
      (add-hook 'prog-mode-hook 'linum-mode)
    #+END_SRC
-
+   
 ** Whitespace
 
    #+NAME: white-space
@@ -388,34 +399,27 @@
 ** Languages
 *** Ruby
 
-    I like Enhanced Ruby Mode.
+    Using Regular Ruby Mode
 
     #+NAME: ruby
     #+BEGIN_SRC emacs-lisp :tangle yes
-      (defun ruby-insert-end ()
-        "Insert \"end\" at point and reindent current line."
-        (interactive)
-        (insert "end")
-        (ruby-indent-line t)
-        (end-of-line))
-      
       (use-package projectile-rails
         :init (add-hook 'projectile-mode-hook 'projectile-rails-on))
       
-      (use-package enh-ruby-mode
-        :mode (("\\.rake$" . enh-ruby-mode)
-               ("\\.gemspec$" . enh-ruby-mode)
-               ("\\.ru$" . enh-ruby-mode)
-               ("Jarfile". enh-ruby-mode)
-               ("Rakefile$" . enh-ruby-mode)
-               ("Gemfile" . enh-ruby-mode)
-               ("Capfile" . enh-ruby-mode)
-               ("Guardfile" . enh-ruby-mode)
-               ("Vagrantfile" . enh-ruby-mode))
+      (use-package ruby-mode
+        :mode (("\\.rake$" . ruby-mode)
+               ("\\.gemspec$" . ruby-mode)
+               ("\\.ru$" . ruby-mode)
+               ("Jarfile". ruby-mode)
+               ("Rakefile$" . ruby-mode)
+               ("Gemfile" . ruby-mode)
+               ("Capfile" . ruby-mode)
+               ("Guardfile" . ruby-mode)
+               ("Vagrantfile" . ruby-mode))
         :init (progn
                 (use-package rvm)
                 (use-package rspec-mode
-                  :config (evil-leader/set-key-for-mode 'enh-ruby-mode
+                  :config (evil-leader/set-key-for-mode 'ruby-mode
                             "r v" 'rspec-verify
                             "r a" 'rspec-verify-all
                             "r s" 'rspec-toggle-spec-and-target
@@ -423,11 +427,7 @@
                             "r m" 'rspec-verify-matching
                             "r c" 'rspec-verify-continue))
                 (setenv "JRUBY_OPTS" "--2.0")
-                (evil-define-key 'insert enh-ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
-      
-      (use-package ruby-electric
-        :config (add-hook 'enh-ruby-mode-hook 'ruby-electric-mode))
-      
+                (evil-define-key 'insert ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
      #+END_SRC
 
 *** Scala
