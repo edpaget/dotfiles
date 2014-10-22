@@ -12,6 +12,9 @@ PATH="$HOME/.cask/bin:$PATH"
 # Added by the Heroku Toolbelt
 PATH="/usr/local/heroku/bin:$PATH"
 
+# Set Node Modules Path
+PATH="./node_modules/.bin:$PATH"
+
 export PATH
 
 ### Locale

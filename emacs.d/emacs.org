@@ -398,14 +398,15 @@
         (insert "end")
         (ruby-indent-line t)
         (end-of-line))
-
+      
       (use-package projectile-rails
         :init (add-hook 'projectile-mode-hook 'projectile-rails-on))
-
+      
       (use-package enh-ruby-mode
         :mode (("\\.rake$" . enh-ruby-mode)
                ("\\.gemspec$" . enh-ruby-mode)
                ("\\.ru$" . enh-ruby-mode)
+               ("Jarfile". enh-ruby-mode)
                ("Rakefile$" . enh-ruby-mode)
                ("Gemfile" . enh-ruby-mode)
                ("Capfile" . enh-ruby-mode)
@@ -423,10 +424,10 @@
                             "r c" 'rspec-verify-continue))
                 (setenv "JRUBY_OPTS" "--2.0")
                 (evil-define-key 'insert enh-ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
-
+      
       (use-package ruby-electric
         :config (add-hook 'enh-ruby-mode-hook 'ruby-electric-mode))
-
+      
      #+END_SRC
 
 *** Scala
