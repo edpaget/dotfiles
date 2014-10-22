@@ -7,7 +7,6 @@
 (depends-on "clojure-mode")
 (depends-on "coffee-mode")
 (depends-on "dtrt-indent")
-(depends-on "enh-ruby-mode")
 (depends-on "evil")
 (depends-on "evil-god-state")
 (depends-on "evil-leader")
