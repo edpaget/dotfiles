@@ -59,21 +59,6 @@
 
 * Emacs Configuration
 
-** Backup and Autosave Files
-   Store backup and autosave files in the =/tmp/= direcotry
-   
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (setq make-backup-files nil) ; stop creating backup~ files
-     (setq auto-save-default nil) ; stop creating #autosave# files
-   #+END_SRC
-
-   Keep Eshell's temporary files out of the way:
-
-   #+NAME: init-after
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (setq eshell-directory-name (expand-file-name "eshell/" nox/ephemeral-directory))
-   #+END_SRC   
-
 ** Paths
 
    Keep any Elisp files not installed from a package repository in the
@@ -89,11 +74,26 @@
 
    #+NAME: init-before
    #+BEGIN_SRC emacs-lisp :tangle yes
-     (defvar nox/ephemeral-directory "~/.emacs.ephemeral/")
-     (unless (file-exists-p nox/ephemeral-directory)
-       (mkdir nox/ephemeral-directory))
+     (defvar ed/ephemeral-directory "~/.emacs.ephemeral/")
+     (unless (file-exists-p ed/ephemeral-directory)
+       (mkdir ed/ephemeral-directory))
    #+END_SRC
 
+** Backup and Autosave Files
+   Store backup and autosave files in the =/tmp/= direcotry
+   
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq make-backup-files nil) ; stop creating backup~ files
+     (setq auto-save-default nil) ; stop creating #autosave# files
+   #+END_SRC
+
+   Keep Eshell's temporary files out of the way:
+
+   #+NAME: init-after
+   #+BEGIN_SRC emacs-lisp :tangle yes
+     (setq eshell-directory-name (expand-file-name "eshell/" ed/ephemeral-directory))
+   #+END_SRC   
+   
 ** UI
 
    Hide parts of the GUI that we don't need, namely the graphical tool
@@ -250,12 +250,8 @@
                    (define-key evil-normal-state-map "+" 'evil-numbers/inc-at-pt)
                    (define-key evil-normal-state-map "_" 'evil-numbers/dec-at-pt))))
        :config (progn
-                 (setq evil-default-cursor '("DodgerBlue1" box)
-                       evil-normal-state-cursor '("black" box)
-                       evil-emacs-state-cursor '("pink" box)
+                 (setq evil-emacs-state-cursor '("pink" box)
                        evil-motion-state-cursor '("green" box)
-                       evil-insert-state-cursor '("white" bar)
-                       evil-visual-state-cursor '("white" hbar)
                        evil-replace-state-cursor '("orange" hbar))
      
                  (evil-mode 1)
