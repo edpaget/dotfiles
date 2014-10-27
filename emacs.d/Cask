@@ -30,3 +30,4 @@
 (depends-on "use-package")
 (depends-on "web-mode")
 (depends-on "solarized-theme")
+(depends-on "yaml-mode")

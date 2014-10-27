@@ -194,7 +194,7 @@
 
      (setq comment-auto-fill-only-comments t)
      (add-hook 'text-mode-hook 'turn-on-auto-fill)
-     (add-hook 'prog-mode-hook 'turn-on-auto-fill)
+     (add-hook 'prog-mode-hook 'turn-off-auto-fill)
    #+END_SRC
 
 ** Evil
@@ -407,7 +407,7 @@
                       (add-hook 'scheme-mode-hook 'paredit-mode)
                       (add-hook 'cider-repl-mode-hook 'paredit-mode)
                       (add-hook 'clojure-mode-hook 'paredit-mode)))
-  #+END_SRC
+   #+END_SRC
 
 ** Languages
 *** Ruby
@@ -418,7 +418,7 @@
     #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package projectile-rails
         :init (add-hook 'projectile-mode-hook 'projectile-rails-on))
-      
+
       (use-package ruby-mode
         :mode (("\\.rake$" . ruby-mode)
                ("\\.gemspec$" . ruby-mode)
@@ -440,7 +440,11 @@
                             "r m" 'rspec-verify-matching
                             "r c" 'rspec-verify-continue))
                 (setenv "JRUBY_OPTS" "--2.0")
-                (evil-define-key 'insert ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
+                (evil-define-key 'insert ruby-mode-map (kbd "RET") 'evil-ret-and-indent))
+        :config (progn
+                  (add-hook 'ruby-mode-hook
+                            '(lambda () (add-to-list (make-local-variable 'paredit-space-for-delimiter-predicates)
+                                                     (lambda (_ _) nil))))))
      #+END_SRC
 
 *** Scala
@@ -503,7 +507,9 @@
     #+NAME clojure
     #+BEGIN_SRC emacs-lisp :tangle yes
       (use-package clojure-mode
-        :mode (("\\.clj" . clojure-mode))
+        :mode (("\\.clj" . clojure-mode)
+               ("\\.cljs" . clojure-mode)
+               ("\\.cljx" . clojure-mode))
         :init (progn
                 (use-package cider
                   :config (progn
@@ -513,7 +519,16 @@
                   (apply 'evil-leader/set-key-for-mode 'clojure-mode
                          ed/paredit-evil-leader-keys)))
     #+END_SRC
-    
+
+*** YAML...
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (use-package yaml-mode
+        :mode (("\\.yml" . yaml-mode)
+               ("\\.yaml" . yaml-mode)
+               ("\\.yml.hudson" . yaml-mode)
+               ("\\.yaml.hudson" . yaml-mode)))
+    #+END_SRC
+
 ** Ido
 
    #+NAME: ido
