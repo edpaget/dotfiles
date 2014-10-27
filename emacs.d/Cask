@@ -3,6 +3,7 @@
 (source org)
 
 (depends-on "bundler")
+(depends-on "smex")
 (depends-on "cider")
 (depends-on "clojure-mode")
 (depends-on "coffee-mode")
@@ -12,6 +13,7 @@
 (depends-on "evil-leader")
 (depends-on "evil-numbers")
 (depends-on "evil-surround")
+(depends-on "evil-paredit")
 (depends-on "flx-ido")
 (depends-on "js2-mode")
 (depends-on "magit")
