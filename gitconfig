@@ -5,8 +5,7 @@
 	editor = vim
 	excludesfile = /home/edward/.gitignore_global
 [push]
-	defualt = matching
-	default = matching
+	default = simple
 [grep]
 	extendRegexp = true
 	lineNumber = true
