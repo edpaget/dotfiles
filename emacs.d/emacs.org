@@ -529,6 +529,13 @@
                ("\\.yaml.hudson" . yaml-mode)))
     #+END_SRC
 
+*** Rust
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (use-package rust-mode
+        :mode (("\\.rs$" . rust-mode)))
+    #+END_SRC
+
 ** Ido
 
    #+NAME: ido

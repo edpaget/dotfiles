@@ -5,3 +5,4 @@ emacs.d/emacs.el
 emacs.d/projectile*
 emacs.d/session.*
 lein/self-installs/
+emacs.d/smex-items

@@ -31,3 +31,4 @@
 (depends-on "web-mode")
 (depends-on "solarized-theme")
 (depends-on "yaml-mode")
+(depends-on "rust-mode")
