@@ -32,3 +32,4 @@
 (depends-on "solarized-theme")
 (depends-on "yaml-mode")
 (depends-on "rust-mode")
+(depends-on "dockerfile-mode")

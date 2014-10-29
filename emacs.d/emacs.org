@@ -536,6 +536,13 @@
         :mode (("\\.rs$" . rust-mode)))
     #+END_SRC
 
+*** Docker
+
+    #+BEGIN_SRC emacs-lisp :tangle yes
+      (use-package dockerfile-mode
+        :mode (("Dockerfile" . dockerfile-mode))) 
+    #+END_SRC
+
 ** Ido
 
    #+NAME: ido
