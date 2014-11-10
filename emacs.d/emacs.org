@@ -119,9 +119,9 @@
    #+BEGIN_SRC emacs-lisp :tangle no
      (cond
       ((find-font (font-spec :name "Input"))
-       (setq default-frame-alist '((font ."Input-10"))))
+       (add-to-list 'default-frame-alist '(font . "Input-10")))
       ((find-font (font-spec :name "Droid Sans Mono"))
-       (setq default-frame-alist '((font . "Droid Sans Mono-10")))))
+       (add-to-list 'default-frame-alist '(font . "Droid Sans Mono-10"))))
    #+END_SRC
 
    Highlight the current line.
@@ -134,21 +134,9 @@
    GUI Emacs windows default to a tiny size. Usually, I want the
    window to fill the screen:
 
-   #+BEGIN_QUOTE
-     The developer build of Emacs Trunk has a function called
-     ~toggle-frame-maximized~, which is included within
-     =.../lisp/frame.el=. That function can be added to the
-     ~after-init-hook~ or ~emacs-startup-hook~, or simply included in the
-     =.emacs= file that gets loaded on startup. On OSX, it increases
-     both width and height in one-fell-swoop.
-   #+END_QUOTE
-
-   Source: http://stackoverflow.com/a/18711628
-
    #+NAME: appearance
    #+BEGIN_SRC emacs-lisp :tangle no
-     (if (fboundp 'toggle-frame-maximized)
-         (add-hook 'emacs-startup-hook 'toggle-frame-maximized))
+     (add-to-list 'default-frame-alist '(fullscreen . maximized))
    #+END_SRC
 
    Suppress the theme's background color and Emacs's menu bar in
@@ -429,7 +417,11 @@
                ("Guardfile" . ruby-mode)
                ("Vagrantfile" . ruby-mode))
         :init (progn
-                (use-package rvm)
+                (use-package rvm
+                  :config (progn
+                            (rvm-use-default)
+                            (add-hook 'ruby-mode-hook
+                                      (lambda () (rvm-activate-corresponding-ruby)))))
                 (use-package rspec-mode
                   :config (evil-leader/set-key-for-mode 'ruby-mode
                             "r v" 'rspec-verify
@@ -439,11 +431,7 @@
                             "r m" 'rspec-verify-matching
                             "r c" 'rspec-verify-continue))
                 (setenv "JRUBY_OPTS" "--2.0")
-                (evil-define-key 'insert ruby-mode-map (kbd "RET") 'evil-ret-and-indent))
-        :config (progn
-                  (add-hook 'ruby-mode-hook
-                            '(lambda () (add-to-list (make-local-variable 'paredit-space-for-delimiter-predicates)
-                                                     (lambda (_ _) nil))))))
+                (evil-define-key 'insert ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
      #+END_SRC
 
 ** Scala
@@ -517,14 +505,16 @@
     #+END_SRC
 
 ** YAML...
-    #+BEGIN_SRC emacs-lisp :tangle no
+   
+   #+NAME yaml
+   #+BEGIN_SRC emacs-lisp :tangle no
       (use-package yaml-mode
         :mode (("\\.yml" . yaml-mode)
                ("\\.yaml" . yaml-mode)
                ("\\.yml.hudson" . yaml-mode)
                ("\\.yaml.hudson" . yaml-mode)))
-    #+END_SRC
-
+   #+END_SRC
+   
 ** Rust
    
     #+NAME rust
@@ -535,6 +525,7 @@
 
 ** Docker
 
+    #+NAME docker
     #+BEGIN_SRC emacs-lisp :tangle no
       (use-package dockerfile-mode
         :mode (("Dockerfile" . dockerfile-mode))) 
@@ -595,8 +586,24 @@
     ;; Configuration group: editing
     <<editing>>
 
+    ;; Configuration group: projectile
+    <<projectile>>
+
     ;; Configuration group: paredit
     <<paredit>>
+
+    ;; Configuration group: languages
+    <<ruby>>
+    <<scala>>
+    <<java>>
+    <<rust>>
+    <<clojure>>
+    <<markdown>>
+    <<javascript>>
+    <<coffeescript>>
+    <<rust>>
+    <<docker>>
+    <<yaml>>
 
     ;; Configuration group: init-after
     <<init-after>>
