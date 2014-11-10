@@ -53,36 +53,34 @@
   packages. Mostly because it seems pretty swag.
 
   #+NAME: init-before
-  #+BEGIN_SRC emacs-lisp :tangle yes
+  #+BEGIN_SRC emacs-lisp :tangle no
     (require 'use-package)
   #+END_SRC
 
-* Emacs Configuration
-
-** Paths
+* Paths
 
    Keep any Elisp files not installed from a package repository in the
    =vendor/= directory:
 
    #+NAME: init-before
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (defvar nox/vendor-directory (concat user-emacs-directory "vendor/"))
-     (add-to-list 'load-path nox/vendor-directory)
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (defvar ed/vendor-directory (concat user-emacs-directory "vendor/"))
+     (add-to-list 'load-path ed/vendor-directory)
    #+END_SRC
 
    Keep temporary files in a separate directory:
 
    #+NAME: init-before
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (defvar ed/ephemeral-directory "~/.emacs.ephemeral/")
      (unless (file-exists-p ed/ephemeral-directory)
        (mkdir ed/ephemeral-directory))
    #+END_SRC
 
-** Backup and Autosave Files
+* Backup and Autosave Files
    Store backup and autosave files in the =/tmp/= direcotry
    
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (setq make-backup-files nil) ; stop creating backup~ files
      (setq auto-save-default nil) ; stop creating #autosave# files
    #+END_SRC
@@ -90,17 +88,17 @@
    Keep Eshell's temporary files out of the way:
 
    #+NAME: init-after
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (setq eshell-directory-name (expand-file-name "eshell/" ed/ephemeral-directory))
    #+END_SRC   
    
-** UI
+* UI
 
    Hide parts of the GUI that we don't need, namely the graphical tool
    bar and any scroll bars.
 
    #+NAME: appearance
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
      (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
    #+END_SRC
@@ -109,7 +107,7 @@
    little more.
 
    #+NAME: appearance
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (load-theme 'solarized-light t)
      (setq solarized-distinct-fringe-background t)
    #+END_SRC
@@ -117,18 +115,18 @@
    We also set the font while specifying a couple fallbacks.
 
    #+NAME: appearance
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (cond
       ((find-font (font-spec :name "Input"))
        (set-default-font "Input-8"))
-      ((fint-font (font-spec :name "Droid Sans Mono"))
+      ((find-font (font-spec :name "Droid Sans Mono"))
        (set-default-font "Droid Sans Mono-8")))
    #+END_SRC
 
    Highlight the current line.
 
    #+NAME: appearance
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (global-hl-line-mode)
    #+END_SRC
 
@@ -147,7 +145,7 @@
    Source: http://stackoverflow.com/a/18711628
 
    #+NAME: appearance
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (if (fboundp 'toggle-frame-maximized)
          (add-hook 'emacs-startup-hook 'toggle-frame-maximized))
    #+END_SRC
@@ -156,17 +154,17 @@
    terminal frames:
 
    #+NAME: appearance
-   #+BEGIN_SRC emacs-lisp :tangle yes
-     (defun nox/after-make-frame (frame)
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (defun ed/after-make-frame (frame)
        (unless (display-graphic-p frame)
          (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
          (set-face-background 'default "dummy-color" frame)))
 
-     (add-hook 'after-make-frame-functions 'nox/after-make-frame)
+     (add-hook 'after-make-frame-functions 'ed/after-make-frame)
    #+END_SRC
 
    #+NAME: appearance
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (setq ring-bell-function 'ignore)
      (setq inhibit-startup-screen t)
      
@@ -183,10 +181,10 @@
      (add-hook 'prog-mode-hook 'linum-mode)
    #+END_SRC
    
-** Whitespace
+* Whitespace
 
    #+NAME: white-space
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (setq-default indent-tabs-mode nil)
 
      (use-package dtrt-indent
@@ -197,7 +195,7 @@
      (add-hook 'prog-mode-hook 'turn-off-auto-fill)
    #+END_SRC
 
-** Evil
+* Evil
 
    Let's set this first because I can't type another sentance with
    filling it with hjkls.
@@ -208,7 +206,7 @@
    around [[https://github.com/cofi/evil-leader/issues/10][a limitation]].)
 
    #+NAME: evil
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package evil
        :pre-load
        (setq evil-want-C-u-scroll t
@@ -289,9 +287,9 @@
    Additionally, let's make =ESC= work more or less like it does in Vim.
 
    #+NAME: evil
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      ;; Escape minibuffer
-     (defun nox/minibuffer-keyboard-quit ()
+     (defun ed/minibuffer-keyboard-quit ()
        "Abort recursive edit.
 
      In Delete Selection mode, if the mark is active, just deactivate it;
@@ -302,33 +300,33 @@
          (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
          (abort-recursive-edit)))
 
-     (define-key minibuffer-local-map [escape] 'nox/minibuffer-keyboard-quit)
-     (define-key minibuffer-local-ns-map [escape] 'nox/minibuffer-keyboard-quit)
-     (define-key minibuffer-local-completion-map [escape] 'nox/minibuffer-keyboard-quit)
-     (define-key minibuffer-local-must-match-map [escape] 'nox/minibuffer-keyboard-quit)
-     (define-key minibuffer-local-isearch-map [escape] 'nox/minibuffer-keyboard-quit)
+     (define-key minibuffer-local-map [escape] 'ed/minibuffer-keyboard-quit)
+     (define-key minibuffer-local-ns-map [escape] 'ed/minibuffer-keyboard-quit)
+     (define-key minibuffer-local-completion-map [escape] 'ed/minibuffer-keyboard-quit)
+     (define-key minibuffer-local-must-match-map [escape] 'ed/minibuffer-keyboard-quit)
+     (define-key minibuffer-local-isearch-map [escape] 'ed/minibuffer-keyboard-quit)
    #+END_SRC
 
    #+NAME: evil
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package evil-god-state
        :commands evil-execute-in-god-state
       :init (evil-define-key 'normal global-map "\\" 'evil-execute-in-god-state))
    #+END_SRC
 
    #+NAME: evil
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
 
    
    #+END_SRC
    
-** Version Control and History
+* Version Control and History
 
    Undo tree provides a Vim-like branching undo history that can be
    visualized and traversed in another window.
 
    #+NAME: editing
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package undo-tree
        :config
        (setq undo-tree-visualizer-diff t
@@ -338,7 +336,7 @@
    Magit provides featureful Git integration.
 
    #+NAME: editing
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package magit
        :commands (magit-status magit-diff magit-log magit-blame-mode)
        :init
@@ -356,24 +354,24 @@
          (evil-define-key 'emacs magit-mode-map "K" 'magit-discard-item))) ; k
    #+END_SRC
 
-** Projectile
+* Projectile
 
    #+NAME: projectile
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package projectile
        :init (projectile-global-mode)
        :config (setq projectile-enable-caching t))
    #+END_SRC
 
-** Paredit
+* Paredit
 
    I think it's often useful to have Paredit even for non-lisps
 
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (defun ed/paredit-non-lisp ())
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (defvar ed/paredit-evil-leader-keys
        (list ">" 'paredit-forward-slurp-sexp
              "<" 'paredit-backward-barf-sexp
@@ -388,7 +386,7 @@
    #+END_SRC
 
    #+NAME: paredit
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
           (use-package paredit
             :config (progn
                       (use-package evil-paredit
@@ -409,13 +407,13 @@
                       (add-hook 'clojure-mode-hook 'paredit-mode)))
    #+END_SRC
 
-** Languages
-*** Ruby
+* Languages
+** Ruby
 
     Using Regular Ruby Mode
 
     #+NAME: ruby
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle no
       (use-package projectile-rails
         :init (add-hook 'projectile-mode-hook 'projectile-rails-on))
 
@@ -447,36 +445,36 @@
                                                      (lambda (_ _) nil))))))
      #+END_SRC
 
-*** Scala
+** Scala
 
     #+NAME: scala
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle no
         (use-package scala-mode2)
     #+END_SRC
 
-*** Markdown
+** Markdown
 
     #+NAME: markdown
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle no
          (use-package markdown-mode
            :mode (("\\.md$" . markdown-mode)
                   ("\\.markdown$" . markdown-mode)
                   ("\\.apib" . markdown-mode)))
     #+END_SRC
 
-*** Javascript
+** Javascript
 
     #+NAME: javascript
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle no
             (use-package js2-mode
               :mode (("\\.js$" . js2-mode)
                      ("\\.json" . js2-mode)))
     #+END_SRC
 
-*** Coffeescript
+** Coffeescript
 
     #+NAME: coffeescript
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle no
       (use-package coffee-mode
         :mode (("\\.coffee$" . coffee-mode)
                ("\\.cjsx" . coffee-mode))
@@ -489,10 +487,10 @@
                                            space-after-tab))
                   (custom-set-variables '(coffee-tab-width 2))))
     #+END_SRC
-*** Webmode
+** Webmode
 
     #+NAME: webmode
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle no
       (use-package web-mode
         :mode (("\\.html?\\'" . web-mode)
                ("\\.css\\'" . web-mode)
@@ -502,10 +500,10 @@
         (add-hook 'web-mode-hook (lambda ()
                                    (set-fill-column 120))))
     #+END_SRC
-*** Clojure
+** Clojure
 
     #+NAME clojure
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle no
       (use-package clojure-mode
         :mode (("\\.clj" . clojure-mode)
                ("\\.cljs" . clojure-mode)
@@ -520,8 +518,8 @@
                          ed/paredit-evil-leader-keys)))
     #+END_SRC
 
-*** YAML...
-    #+BEGIN_SRC emacs-lisp :tangle yes
+** YAML...
+    #+BEGIN_SRC emacs-lisp :tangle no
       (use-package yaml-mode
         :mode (("\\.yml" . yaml-mode)
                ("\\.yaml" . yaml-mode)
@@ -529,24 +527,24 @@
                ("\\.yaml.hudson" . yaml-mode)))
     #+END_SRC
 
-*** Rust
+** Rust
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle no
       (use-package rust-mode
         :mode (("\\.rs$" . rust-mode)))
     #+END_SRC
 
-*** Docker
+** Docker
 
-    #+BEGIN_SRC emacs-lisp :tangle yes
+    #+BEGIN_SRC emacs-lisp :tangle no
       (use-package dockerfile-mode
         :mode (("Dockerfile" . dockerfile-mode))) 
     #+END_SRC
 
-** Ido
+* Ido
 
    #+NAME: ido
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (use-package flx-ido
        :init (progn
               (ido-mode 1)
@@ -557,10 +555,10 @@
                 (setq ido-use-faces nil)))
    #+END_SRC
    
-** Winner-Mode
+* Winner-Mode
 
    #+NAME: ido
-   #+BEGIN_SRC emacs-lisp :tangle yes
+   #+BEGIN_SRC emacs-lisp :tangle no
      (progn
        (when (fboundp 'winner-mode)
          (winner-mode 1)))
