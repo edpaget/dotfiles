@@ -16,6 +16,7 @@
   [[https://github.com/edpaget/dotfiles/][dotfiles repo]] on GitHub.
 
 * Installation
+
   You should be able to install based solely on what's in this
   repo. I use [[https://github.com/cask/cask][Cask]] and [[https://github.com/rdallasgray/pallet][Pallet]] to manage dependencies.
 
@@ -34,7 +35,6 @@
 
   I'll preface any variables I introduce with an =ed/= to make
   them stand out from built-ins and functions defined in plug-ins
-
 
   Evil Leader mode provides something like Vim's =<Leader>=, which is
   set to =,= below. Here are the conventions used throughout the
@@ -79,7 +79,8 @@
 
 * Backup and Autosave Files
    Store backup and autosave files in the =/tmp/= direcotry
-   
+  
+   #+NAME: init-before
    #+BEGIN_SRC emacs-lisp :tangle no
      (setq make-backup-files nil) ; stop creating backup~ files
      (setq auto-save-default nil) ; stop creating #autosave# files
@@ -92,15 +93,15 @@
      (setq eshell-directory-name (expand-file-name "eshell/" ed/ephemeral-directory))
    #+END_SRC   
    
-* UI
+* Appearance 
 
    Hide parts of the GUI that we don't need, namely the graphical tool
    bar and any scroll bars.
 
    #+NAME: appearance
    #+BEGIN_SRC emacs-lisp :tangle no
-     (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-     (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+     (if (fboundp 'tool-bar-mode) (tool-bar-mode 0))
+     (if (fboundp 'scroll-bar-mode) (scroll-bar-mode 0))
    #+END_SRC
 
    Use Solarized Light as the the theme. Make gutters standout a
@@ -114,13 +115,13 @@
 
    We also set the font while specifying a couple fallbacks.
 
-   #+NAME: appearance
+   #+NAME: none
    #+BEGIN_SRC emacs-lisp :tangle no
      (cond
       ((find-font (font-spec :name "Input"))
-       (set-default-font "Input-8"))
+       (setq default-frame-alist '((font ."Input-10"))))
       ((find-font (font-spec :name "Droid Sans Mono"))
-       (set-default-font "Droid Sans Mono-8")))
+       (setq default-frame-alist '((font . "Droid Sans Mono-10")))))
    #+END_SRC
 
    Highlight the current line.
@@ -169,7 +170,7 @@
      (setq inhibit-startup-screen t)
      
      ;; Set message for *scratch* buffer
-     (setq initial-scratch-message ";; Hello, Nox.\n")
+     (setq initial-scratch-message ";; Hello, Ed.\n")
      
      ;; Use ANSI color in shell
      (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
@@ -181,9 +182,11 @@
      (add-hook 'prog-mode-hook 'linum-mode)
    #+END_SRC
    
-* Whitespace
-
-   #+NAME: white-space
+* Editing
+  
+  Indention settings.
+  
+   #+NAME: editing
    #+BEGIN_SRC emacs-lisp :tangle no
      (setq-default indent-tabs-mode nil)
 
@@ -194,6 +197,12 @@
      (add-hook 'text-mode-hook 'turn-on-auto-fill)
      (add-hook 'prog-mode-hook 'turn-off-auto-fill)
    #+END_SRC
+
+  Require final newline
+  #+NAME: editing
+  #+BEGIN_SRC emacs-lisp :tangle no
+    (setq require-final-newline t)
+  #+END_SRC
 
 * Evil
 
@@ -307,17 +316,13 @@
      (define-key minibuffer-local-isearch-map [escape] 'ed/minibuffer-keyboard-quit)
    #+END_SRC
 
+   Finally include evil-god-state activated by the =\= key. 
+
    #+NAME: evil
    #+BEGIN_SRC emacs-lisp :tangle no
      (use-package evil-god-state
        :commands evil-execute-in-god-state
-      :init (evil-define-key 'normal global-map "\\" 'evil-execute-in-god-state))
-   #+END_SRC
-
-   #+NAME: evil
-   #+BEGIN_SRC emacs-lisp :tangle no
-
-   
+       :init (evil-define-key 'normal global-map "\\" 'evil-execute-in-god-state))
    #+END_SRC
    
 * Version Control and History
@@ -365,46 +370,42 @@
 
 * Paredit
 
-   I think it's often useful to have Paredit even for non-lisps
+   I think it's often useful to have Paredit even for non-lisps. This
+   makes using it a little nicer. Shamlessly stolen from [[https://github.com/jhenahan/.emacs.old/blob/master/config/jhenahan-evil.el][Jack Henahan]].
 
+   #+NAME paredit
    #+BEGIN_SRC emacs-lisp :tangle no
-     (defun ed/paredit-non-lisp ())
+     (defun paredit-space-for-delimiter-p (endp delimiter)
+       (and (not (if endp (eobp) (bobp)))
+            (memq (char-syntax (if endp (char-after) (char-before)))
+                  (list ?\" ;; REMOVED ?w ?_
+                        (let ((matching (matching-paren delimiter)))
+                          (and matching (char-syntax matching)))))))
    #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (defvar ed/paredit-evil-leader-keys
-       (list ">" 'paredit-forward-slurp-sexp
-             "<" 'paredit-backward-barf-sexp
-             "W" 'paredit-wrap-round
-             "w [" 'paredit-wrap-square
-             "w (" 'paredit-wrap-round
-             "w {" 'paredit-wrap-curly
-             "w \"" 'paredit-wrap-quote
-             "O" 'paredit-split-sexp
-             "J" 'paredit-join-sexps
-             "S" 'paredit-splice-sexp)) 
-   #+END_SRC
-
+  
    #+NAME: paredit
    #+BEGIN_SRC emacs-lisp :tangle no
-          (use-package paredit
-            :config (progn
-                      (use-package evil-paredit
-                        :config (progn
-                                  (add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
-                                  (add-hook 'clojure-mode 'evil-paredit-mode)
-                                  (add-hook 'cider-repl-mode-hook 'evil-paredit-mode)))
-                      (apply 'evil-leader/set-key-for-mode
-                             'emacs-lisp-mode
-                             ed/paredit-evil-leader-keys)
-                      (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-                      (add-hook 'eval-expression-minibuffer-setup-hook 'paredit-mode)
-                      (add-hook 'ielm-mode-hook 'paredit-mode)
-                      (add-hook 'lisp-mode-hook 'paredit-mode)
-                      (add-hook 'lisp-interaction-mode-hook 'paredit-mode)
-                      (add-hook 'scheme-mode-hook 'paredit-mode)
-                      (add-hook 'cider-repl-mode-hook 'paredit-mode)
-                      (add-hook 'clojure-mode-hook 'paredit-mode)))
+     (add-hook 'ruby-mode-hook
+                           '(lambda () (add-to-list (make-local-variable 'paredit-space-for-delimiter-predicates)
+                                                    (lambda (_ _) nil))))
+
+     (use-package paredit
+       :init (progn
+               (evil-leader/set-key
+                 ">" 'paredit-forward-slurp-sexp
+                 "<" 'paredit-backward-barf-sexp
+                 "W" 'paredit-wrap-round
+                 "w [" 'paredit-wrap-square
+                 "w (" 'paredit-wrap-round
+                 "w {" 'paredit-wrap-curly
+                 "w \"" 'paredit-wrap-quote
+                 "O" 'paredit-split-sexp
+                 "J" 'paredit-join-sexps
+                 "S" 'paredit-splice-sexp)
+               (use-package evil-paredit
+                 :config (progn
+                           (add-hook 'paredit-mode-hook 'evil-paredit-mode)))
+               (add-hook 'prog-mode-hook 'paredit-mode)))
    #+END_SRC
 
 * Languages
@@ -512,10 +513,7 @@
                 (use-package cider
                   :config (progn
                             (setq nrepl-hide-special-buffers t)
-                            (add-hook 'cider-repl-mode-hook 'paredit-mode))))
-        :config (progn
-                  (apply 'evil-leader/set-key-for-mode 'clojure-mode
-                         ed/paredit-evil-leader-keys)))
+                            (add-hook 'cider-repl-mode-hook 'paredit-mode)))))
     #+END_SRC
 
 ** YAML...
@@ -528,7 +526,8 @@
     #+END_SRC
 
 ** Rust
-
+   
+    #+NAME rust
     #+BEGIN_SRC emacs-lisp :tangle no
       (use-package rust-mode
         :mode (("\\.rs$" . rust-mode)))
@@ -557,9 +556,50 @@
    
 * Winner-Mode
 
-   #+NAME: ido
+   #+NAME: winner
    #+BEGIN_SRC emacs-lisp :tangle no
      (progn
        (when (fboundp 'winner-mode)
          (winner-mode 1)))
+   #+END_SRC
+
+* Configuration Layout
+
+  Here we define the =emacs.el= file that gets generated by the source
+  blocks in our Org document. This is the file that actually gets
+  loaded on startup.
+
+  #+BEGIN_SRC emacs-lisp :tangle yes :noweb no-export :exports code
+    ;;; emacs.el --- Emacs configuration generated via Org Babel
+
+    ;;; Commentary:
+
+    ;; Do not modify this file by hand.  It was automatically generated
+    ;; from `emacs.org` in the same directory.  See that file for more
+    ;; information.
+
+    ;;; Code:
+
+    ;; Configuration group: init-before
+    <<init-before>>
+
+    ;; Configuration group: appearance
+    <<appearance>>
+
+    ;; Configuration group: evil
+    <<evil>>
+
+    ;; Configuration group: ido
+    <<ido>>
+
+    ;; Configuration group: editing
+    <<editing>>
+
+    ;; Configuration group: paredit
+    <<paredit>>
+
+    ;; Configuration group: init-after
+    <<init-after>>
+
+    ;; emacs.el ends here
   #+END_SRC
