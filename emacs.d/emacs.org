@@ -109,7 +109,7 @@
 
    #+NAME: appearance
    #+BEGIN_SRC emacs-lisp :tangle no
-     (load-theme 'solarized-light t)
+     (load-theme 'solarized-dark t)
      (setq solarized-distinct-fringe-background t)
    #+END_SRC
 
@@ -168,6 +168,19 @@
      
      (setq linum-format "%4d ")
      (add-hook 'prog-mode-hook 'linum-mode)
+   #+END_SRC
+
+* Smart Mode Line
+
+   Let's use Smart Mode Line for a cool status line
+
+   #+NAME: smartmodeline
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (use-package smart-mode-line
+       :config (progn
+                 (setq sml/no-confirm-load-theme t)
+                 (sml/setup)
+                 (sml/apply-theme 'dark))) 
    #+END_SRC
    
 * Editing
@@ -313,6 +326,18 @@
        :init (evil-define-key 'normal global-map "\\" 'evil-execute-in-god-state))
    #+END_SRC
    
+* Gnus
+  Maybe I can use gnus with evil
+
+  #+NAME: gnus
+  #+BEGIN_SRC emacs-lisp :tangle no
+    (use-package gnus
+      :config (progn
+                (evil-make-overriding-map gnus-mode-map 'emacs)
+                (define-key gnus-mode-map "\C-w" 'evil-window-map)
+                (evil-define-key 'emacs gnus-mode-map "j" 'gnus-goto-next-section)
+                (evil-define-key 'emacs gnus-mode-map "k" 'gnus-goto-next-section))) 
+  #+END_SRC
 * Version Control and History
 
    Undo tree provides a Vim-like branching undo history that can be
@@ -361,7 +386,7 @@
    I think it's often useful to have Paredit even for non-lisps. This
    makes using it a little nicer. Shamlessly stolen from [[https://github.com/jhenahan/.emacs.old/blob/master/config/jhenahan-evil.el][Jack Henahan]].
 
-   #+NAME paredit
+   #+NAME: paredit
    #+BEGIN_SRC emacs-lisp :tangle no
      (defun paredit-space-for-delimiter-p (endp delimiter)
        (and (not (if endp (eobp) (bobp)))
@@ -491,7 +516,7 @@
     #+END_SRC
 ** Clojure
 
-    #+NAME clojure
+    #+NAME: clojure
     #+BEGIN_SRC emacs-lisp :tangle no
       (use-package clojure-mode
         :mode (("\\.clj" . clojure-mode)
@@ -506,7 +531,7 @@
 
 ** YAML...
    
-   #+NAME yaml
+   #+NAME: yaml
    #+BEGIN_SRC emacs-lisp :tangle no
       (use-package yaml-mode
         :mode (("\\.yml" . yaml-mode)
@@ -517,7 +542,7 @@
    
 ** Rust
    
-    #+NAME rust
+    #+NAME: rust
     #+BEGIN_SRC emacs-lisp :tangle no
       (use-package rust-mode
         :mode (("\\.rs$" . rust-mode)))
@@ -525,7 +550,7 @@
 
 ** Docker
 
-    #+NAME docker
+    #+NAME: docker
     #+BEGIN_SRC emacs-lisp :tangle no
       (use-package dockerfile-mode
         :mode (("Dockerfile" . dockerfile-mode))) 
@@ -591,6 +616,9 @@
 
     ;; Configuration group: paredit
     <<paredit>>
+
+    ;; Configuration group: smart mode line
+    <<smartmodeline>>
 
     ;; Configuration group: languages
     <<ruby>>

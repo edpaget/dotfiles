@@ -33,3 +33,5 @@
 (depends-on "yaml-mode")
 (depends-on "rust-mode")
 (depends-on "dockerfile-mode")
+(depends-on "smart-mode-line")
+(depends-on "smart-mode-line-powerline-theme")
