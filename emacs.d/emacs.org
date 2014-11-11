@@ -384,7 +384,7 @@
 * Paredit
 
    I think it's often useful to have Paredit even for non-lisps. This
-   makes using it a little nicer. Shamlessly stolen from [[https://github.com/jhenahan/.emacs.old/blob/master/config/jhenahan-evil.el][Jack Henahan]].
+   makes using it a little nicer. Shamelessly stolen from [[https://github.com/jhenahan/.emacs.old/blob/master/config/jhenahan-evil.el][Jack Henahan]].
 
    #+NAME: paredit
    #+BEGIN_SRC emacs-lisp :tangle no
@@ -398,10 +398,6 @@
   
    #+NAME: paredit
    #+BEGIN_SRC emacs-lisp :tangle no
-     (add-hook 'ruby-mode-hook
-                           '(lambda () (add-to-list (make-local-variable 'paredit-space-for-delimiter-predicates)
-                                                    (lambda (_ _) nil))))
-
      (use-package paredit
        :init (progn
                (evil-leader/set-key
