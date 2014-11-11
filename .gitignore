@@ -6,3 +6,4 @@ emacs.d/projectile*
 emacs.d/session.*
 lein/self-installs/
 emacs.d/smex-items
+emacs.d/.*

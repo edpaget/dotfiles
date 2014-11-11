@@ -384,16 +384,17 @@
 * Paredit
 
    I think it's often useful to have Paredit even for non-lisps. This
-   makes using it a little nicer. Shamelessly stolen from [[https://github.com/jhenahan/.emacs.old/blob/master/config/jhenahan-evil.el][Jack Henahan]].
+   makes using it a little nicer. Shamelessly stolen from [[https://gist.github.com/remvee/879305][Remco van 't Veer]].
 
    #+NAME: paredit
    #+BEGIN_SRC emacs-lisp :tangle no
-     (defun paredit-space-for-delimiter-p (endp delimiter)
-       (and (not (if endp (eobp) (bobp)))
-            (memq (char-syntax (if endp (char-after) (char-before)))
-                  (list ?\" ;; REMOVED ?w ?_
-                        (let ((matching (matching-paren delimiter)))
-                          (and matching (char-syntax matching)))))))
+     (defun ed/disable-paredit-space (mode)
+       "Don't insert a space before paren when not in a lisp mode"
+       (add-hook (intern (format "%s-mode-hook" mode))
+                 '(lambda ()
+                    (add-to-list (make-local-variable 'paredit-space-for-delimiter-predicates)
+                                 (lambda (_ _) nil))
+                    (enable-paredit-mode))))
    #+END_SRC
   
    #+NAME: paredit
@@ -438,6 +439,7 @@
                ("Guardfile" . ruby-mode)
                ("Vagrantfile" . ruby-mode))
         :init (progn
+                (ed/disable-paredit-space "ruby")
                 (use-package rvm
                   :config (progn
                             (rvm-use-default)
@@ -451,6 +453,9 @@
                             "r i" 'rspec-rerun
                             "r m" 'rspec-verify-matching
                             "r c" 'rspec-verify-continue))
+                (use-package robe
+                  :config (progn
+                            (add-hook 'ruby-mode-hook 'robe-mode)))
                 (setenv "JRUBY_OPTS" "--2.0")
                 (evil-define-key 'insert ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
      #+END_SRC
@@ -552,20 +557,46 @@
         :mode (("Dockerfile" . dockerfile-mode))) 
     #+END_SRC
 
-* Ido
+* Auto-Complete
+  Experimenting with Auto-Complete Mode
 
-   #+NAME: ido
-   #+BEGIN_SRC emacs-lisp :tangle no
+  #+NAME: autocomplete
+  #+BEGIN_SRC emacs-lisp :tangle no
+    (use-package company
+      :config (progn
+                (add-hook 'after-init-hook 'global-company-mode)
+                (push 'company-robe company-backends)))
+  #+END_SRC
+
+* Ido
+ 
+  Display ido results vertically instead of horizontally stolen from [[http://lorefnon.me/2014/02/02/configuring-emacs-for-rails.html][lorefnon]]
+
+  #+NAME: ido
+  #+BEGIN_SRC emacs-lisp :tangle no
+  (defun ido-disable-line-truncation () (set (make-local-variable 'truncate-lines) nil))
+  
+  (defun ido-define-keys () ;; C-n/p is more intuitive in vertical layout
+    (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
+    (define-key ido-completion-map (kbd "C-p") 'ido-prev-match))
+  #+END_SRC
+  
+  #+NAME: ido
+  #+BEGIN_SRC emacs-lisp :tangle no
      (use-package flx-ido
        :init (progn
-              (ido-mode 1)
-              (ido-everywhere 1)
-              (flx-ido-mode 1))
+               ;; Display ido results vertically, rather than horizontally
+               (setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+               (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation)
+               (add-hook 'ido-setup-hook 'ido-define-keys)
+               (ido-mode 1)
+               (ido-everywhere 1)
+               (flx-ido-mode 1))
        :config (progn
-                (setq ido-enable-flex-matching t)
-                (setq ido-use-faces nil)))
-   #+END_SRC
-   
+                 (setq ido-enable-flex-matching t)
+                 (setq ido-use-faces nil)))
+  #+END_SRC
+  
 * Winner-Mode
 
    #+NAME: winner
@@ -629,8 +660,12 @@
     <<docker>>
     <<yaml>>
 
+    ;; Configuration group: autocomple
+    <<autocomplete>>
+
     ;; Configuration group: init-after
     <<init-after>>
 
     ;; emacs.el ends here
   #+END_SRC
+  
