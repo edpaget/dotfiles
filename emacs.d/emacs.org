@@ -544,8 +544,6 @@
     #+NAME: rust
     #+BEGIN_SRC emacs-lisp :tangle no
       (use-package rust-mode
-        :init (progn
-                (ed/disable-paredit-space "rust"))
         :mode (("\\.rs$" . rust-mode)))
     #+END_SRC
 
