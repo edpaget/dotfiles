@@ -46,6 +46,7 @@
   | =g= | Git functions (via Magit)   |
   | =o= | Option (minor-mode) toggles |
   | =r= | Ruby/Rails mode functions   |
+  | =h= | Helm functions              |
 
 * Package Configuration
 
@@ -234,12 +235,10 @@
                      "B" 'ibuffer
                      "d" 'projectile-find-dir
                      "D" 'dired
-                     "e" 'ido-find-file
-                     "f" 'projectile-find-file
+                     "e" 'projectile-find-file
                      "k" 'kill-this-buffer
                      "K" 'dash-at-point
                      "p" 'projectile-switch-project
-                     "P" 'paradox-list-packages
                      "s" 'ansi-term
                      "u" 'undo-tree-visualize
                      ;; "w" 'whitespace-cleanup
@@ -598,6 +597,22 @@
                  (setq ido-use-faces nil)))
   #+END_SRC
   
+* Helm
+
+  #+NAME: helm
+  #+BEGIN_SRC emacs-lisp :tangle no
+    (use-package helm
+      :init (progn
+              (use-package helm-projectile
+                :init (progn
+                        (evil-leader/set-key
+                          "h e" #'helm-projectile)))
+              (use-package helm-ag
+                :init (progn
+                        (evil-leader/set-key
+                          "h /" #'helm-ag))))) 
+  #+END_SRC
+
 * Winner-Mode
 
    #+NAME: winner
@@ -663,6 +678,9 @@
 
     ;; Configuration group: autocomple
     <<autocomplete>>
+
+    ;; Configuration group: helm
+    <<helm>>
 
     ;; Configuration group: init-after
     <<init-after>>
