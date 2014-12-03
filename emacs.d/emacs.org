@@ -601,10 +601,19 @@
   #+BEGIN_SRC emacs-lisp :tangle no
     (use-package helm
       :init (progn
+              (helm-mode 1)
+              (evil-leader/set-key
+                "h SPC" #'helm-M-x
+                "h z" #'helm-select-action
+                "h b" #'helm-mini
+                "h f" #'describe-function
+                "h w" #'where-is
+                "h v" #'describe-variable
+                "h e" #'helm-find-files)
               (use-package helm-projectile
                 :init (progn
                         (evil-leader/set-key
-                          "h e" #'helm-projectile)))
+                          "h p" #'helm-projectile)))
               (use-package helm-ag
                 :init (progn
                         (evil-leader/set-key
