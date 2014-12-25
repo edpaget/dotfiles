@@ -110,13 +110,15 @@
 
    #+NAME: appearance
    #+BEGIN_SRC emacs-lisp :tangle no
-     (load-theme 'solarized-dark t)
-     (setq solarized-distinct-fringe-background t)
+     ;; (load-theme 'solarized-dark t)
+     ;; (setq solarized-distinct-fringe-background t)
+     (use-package moe-theme
+        :init (moe-light))
    #+END_SRC
 
    We also set the font while specifying a couple fallbacks.
 
-   #+NAME: none
+   #+NAME: appearance
    #+BEGIN_SRC emacs-lisp :tangle no
      (cond
       ((find-font (font-spec :name "Input"))
@@ -231,25 +233,17 @@
 
                    (evil-leader/set-key
                      "SPC" 'smex
-                     "b" 'ido-switch-buffer
                      "B" 'ibuffer
-                     "d" 'projectile-find-dir
-                     "D" 'dired
-                     "e" 'projectile-find-file
                      "k" 'kill-this-buffer
                      "K" 'dash-at-point
-                     "p" 'projectile-switch-project
-                     "s" 'ansi-term
+                     "s" 'eshell
                      "u" 'undo-tree-visualize
                      ;; "w" 'whitespace-cleanup
                      ;; Option toggle
                      "o l" 'whitespace-mode
                      "o n" 'linum-mode
                      "o q" 'auto-fill-mode
-                     "o w" 'toggle-truncate-lines
-                     ;; winner-mode
-                     "w u" 'winner-undo
-                     "w r" 'winner-redo)))
+                     "o w" 'toggle-truncate-lines)))
 
                (use-package evil-numbers
                  :config
@@ -337,6 +331,7 @@
                 (evil-define-key 'emacs gnus-mode-map "j" 'gnus-goto-next-section)
                 (evil-define-key 'emacs gnus-mode-map "k" 'gnus-goto-next-section))) 
   #+END_SRC
+
 * Version Control and History
 
    Undo tree provides a Vim-like branching undo history that can be
@@ -566,35 +561,6 @@
                 (push 'company-robe company-backends)))
   #+END_SRC
 
-* Ido
- 
-  Display ido results vertically instead of horizontally stolen from [[http://lorefnon.me/2014/02/02/configuring-emacs-for-rails.html][lorefnon]]
-
-  #+NAME: ido
-  #+BEGIN_SRC emacs-lisp :tangle no
-  (defun ido-disable-line-truncation () (set (make-local-variable 'truncate-lines) nil))
-  
-  (defun ido-define-keys () ;; C-n/p is more intuitive in vertical layout
-    (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
-    (define-key ido-completion-map (kbd "C-p") 'ido-prev-match))
-  #+END_SRC
-  
-  #+NAME: ido
-  #+BEGIN_SRC emacs-lisp :tangle no
-     (use-package flx-ido
-       :init (progn
-               ;; Display ido results vertically, rather than horizontally
-               (setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
-               (add-hook 'ido-minibuffer-setup-hook 'ido-disable-line-truncation)
-               (add-hook 'ido-setup-hook 'ido-define-keys)
-               (ido-mode 1)
-               (ido-everywhere 1)
-               (flx-ido-mode 1))
-       :config (progn
-                 (setq ido-enable-flex-matching t)
-                 (setq ido-use-faces nil)))
-  #+END_SRC
-  
 * Helm
 
   #+NAME: helm
@@ -619,15 +585,6 @@
                         (evil-leader/set-key
                           "h /" #'helm-ag))))) 
   #+END_SRC
-
-* Winner-Mode
-
-   #+NAME: winner
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (progn
-       (when (fboundp 'winner-mode)
-         (winner-mode 1)))
-   #+END_SRC
 
 * Configuration Layout
 
