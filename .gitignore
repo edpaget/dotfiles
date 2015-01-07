@@ -9,3 +9,4 @@
 lein/self-installs/
 emacs.d/smex-items
 emacs.d/.*
+emacs.d/elpa/
