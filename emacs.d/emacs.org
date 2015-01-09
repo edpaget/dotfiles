@@ -113,7 +113,7 @@
      ;; (load-theme 'solarized-dark t)
      ;; (setq solarized-distinct-fringe-background t)
      (use-package moe-theme
-        :init (moe-light))
+        :init (moe-dark))
    #+END_SRC
 
    We also set the font while specifying a couple fallbacks.
