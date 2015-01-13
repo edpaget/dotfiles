@@ -173,19 +173,6 @@
      (add-hook 'prog-mode-hook 'linum-mode)
    #+END_SRC
 
-* Smart Mode Line
-
-   Let's use Smart Mode Line for a cool status line
-
-   #+NAME: smartmodeline
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (use-package smart-mode-line
-       :config (progn
-                 (setq sml/no-confirm-load-theme t)
-                 (sml/setup)
-                 (sml/apply-theme 'dark))) 
-   #+END_SRC
-   
 * Editing
   
   Indention settings.
