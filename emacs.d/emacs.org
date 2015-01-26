@@ -437,6 +437,7 @@
                   :config (progn
                             (add-hook 'ruby-mode-hook 'robe-mode)))
                 (setenv "JRUBY_OPTS" "--2.0")
+                (setenv "FIG_RAKE" "on")
                 (evil-define-key 'insert ruby-mode-map (kbd "RET") 'evil-ret-and-indent)))
      #+END_SRC
 
