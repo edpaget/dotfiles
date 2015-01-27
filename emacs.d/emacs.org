@@ -508,6 +508,7 @@
                 (use-package cider
                   :config (progn
                             (setq nrepl-hide-special-buffers t)
+                            (add-hook 'cider-repl-mode-hook 'evil-mode)
                             (add-hook 'cider-repl-mode-hook 'paredit-mode)))))
     #+END_SRC
 
