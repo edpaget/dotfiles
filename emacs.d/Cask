@@ -43,3 +43,4 @@
 (depends-on "helm-ag")
 (depends-on "ensime")
 (depends-on "moe-theme")
+(depends-on "org-present")
