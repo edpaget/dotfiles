@@ -483,6 +483,7 @@
                                            space-after-tab))
                   (custom-set-variables '(coffee-tab-width 2))))
     #+END_SRC
+
 ** Webmode
 
     #+NAME: webmode
@@ -496,6 +497,7 @@
         (add-hook 'web-mode-hook (lambda ()
                                    (set-fill-column 120))))
     #+END_SRC
+
 ** Clojure
 
     #+NAME: clojure
@@ -505,6 +507,7 @@
                ("\\.cljs" . clojure-mode)
                ("\\.cljx" . clojure-mode))
         :init (progn
+                (add-hook 'clojure-mode-hook 'paredit-mode)
                 (use-package cider
                   :config (progn
                             (setq nrepl-hide-special-buffers t)
