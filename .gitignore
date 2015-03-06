@@ -11,3 +11,7 @@ emacs.d/smex-items
 emacs.d/.*
 emacs.d/elpa/
 emacs.d/tramp
+lein/repl-history
+sbt/0.13/
+sbt/boot/
+

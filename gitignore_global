@@ -3,3 +3,5 @@
 .env
 .vagrant/
 .ruby-*
+.ensime
+.ensime_cache
