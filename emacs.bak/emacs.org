@@ -78,6 +78,12 @@
        (mkdir ed/ephemeral-directory))
    #+END_SRC
 
+   Add user bin to exec-path
+   #+NAME: init-before
+   #+BEGIN_SRC emacs-lisp :tangle no
+     (setq exec-path (append exec-path '("/home/edward/bin")))
+   #+END_SRC
+
 * Backup and Autosave Files
    Store backup and autosave files in the =/tmp/= direcotry
   
@@ -103,6 +109,7 @@
    #+BEGIN_SRC emacs-lisp :tangle no
      (if (fboundp 'tool-bar-mode) (tool-bar-mode 0))
      (if (fboundp 'scroll-bar-mode) (scroll-bar-mode 0))
+     (if (fboundp 'fringe-mode) (fringe-mode -1))
    #+END_SRC
 
    Use Solarized Light as the the theme. Make gutters standout a
