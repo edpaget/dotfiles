@@ -23,7 +23,9 @@
       clojure
       html
       scala
-      syntax-checking
+      spotify
+      javascript
+      rust
      )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -92,6 +94,7 @@ before layers configuration."
   "Configuration function.
  This function is called at the very end of Spacemacs initialization after
 layers configuration."
+  (add-to-list 'auto-mode-alist '("\\.cjsx\\'" . coffee-mode))
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
