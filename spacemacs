@@ -72,9 +72,9 @@ before layers configuration."
    dotspacemacs-enable-paste-micro-state t
    dotspacemacs-guide-key-delay 0.4
    dotspacemacs-loading-progress-bar t
-   dotspacemacs-fullscreen-at-startup t
+   dotspacemacs-fullscreen-at-startup nil
    dotspacemacs-fullscreen-use-non-native nil
-   dotspacemacs-maximized-at-startup nil
+   dotspacemacs-maximized-at-startup t
    dotspacemacs-active-transparency 90
    dotspacemacs-inactive-transparency 90
    dotspacemacs-mode-line-unicode-symbols t
