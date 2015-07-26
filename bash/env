@@ -3,11 +3,14 @@ HISTSIZE=1000
 HISTFILESIZE=2000
 
 ### Path Settings
-# Add user bind
+# Add user bin
 PATH="$HOME/bin:$PATH"
 
 # Add Cask to path
 PATH="$HOME/.cask/bin:$PATH"
+
+# Add Home Directory npm packges
+PATH="$HOME/.npm-packages/bin/:$PATH"
 
 # Added by the Heroku Toolbelt
 PATH="/usr/local/heroku/bin:$PATH"
