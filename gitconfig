@@ -9,8 +9,6 @@
 [grep]
 	extendRegexp = true
 	lineNumber = true
-[diff]
-	external = vimdiff
 [merge]
 	tool = vimdiff
 [alias]
