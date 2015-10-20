@@ -1,5 +1,5 @@
 ;; -*- mode: dotspacemacs -*-
-;; This file is loaded by Spacemacs at startup.
+; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
 (defun dotspacemacs/layers ()
@@ -16,6 +16,7 @@
       better-defaults
       (git :variables
            git-gutter-use-fringe t)
+      python
       markdown
       org
       syntax-checking
@@ -29,6 +30,7 @@
       rcirc
       react
       yaml
+      ruby-on-rails
      )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -63,7 +65,7 @@ before layers configuration."
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 13
+                               :size 9
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
