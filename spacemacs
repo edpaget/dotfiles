@@ -31,9 +31,12 @@
       react
       yaml
       ruby-on-rails
+      emacs-lisp
+      gnus
+      purescript
      )
    ;; A list of packages and/or extensions that will not be install and loaded.
-   dotspacemacs-excluded-packages '()
+   ;; dotspacemacs-excluded-packages '(evil-escape)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'
@@ -45,6 +48,7 @@ This function is called at the very startup of Spacemacs initialization
 before layers configuration."
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
+
   (setq-default
    dotspacemacs-editing-style 'vim
    dotspacemacs-verbose-loading nil
@@ -65,9 +69,9 @@ before layers configuration."
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 9
+                               :size 9.0
                                :weight normal
-                               :width normal
+                               :width condensed
                                :powerline-scale 1.1)
    dotspacemacs-leader-key "SPC"
    dotspacemacs-emacs-leader-key "M-m"
@@ -100,7 +104,29 @@ before layers configuration."
  This function is called at the very end of Spacemacs initialization after
 layers configuration."
   (add-to-list 'auto-mode-alist '("\\.cjsx\\'" . coffee-mode))
-)
+  )
+
+;; Get email, and store in nnml
+(setq gnus-secondary-select-methods
+      '(
+        (nnimap "gmail"
+                (nnimap-address
+                 "imap.gmail.com")
+                (nnimap-server-port 993)
+                (nnimap-stream ssl))
+        ))
+
+;; Send email via Gmail:
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-default-smtp-server "smtp.gmail.com")
+
+;; Archive outgoing email in Sent folder on imap.gmail.com:
+(setq gnus-message-archive-method '(nnimap "imap.gmail.com")
+      gnus-message-archive-group "[Gmail]/Sent Mail")
+
+;; store email in ~/gmail directory
+(setq nnml-directory "~/gmail")
+(setq message-directory "~/gmail")
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
