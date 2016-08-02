@@ -24,3 +24,6 @@ export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 # added by travis gem
 [ -f /home/edward/.travis/travis.sh ] && source /home/edward/.travis/travis.sh
+
+export NVM_DIR="/home/edward/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
