@@ -7,13 +7,12 @@ alias lr='lein repl'
 alias senv='source .env'
 alias r='rails'
 alias tmux='TERM=screen-256color-bce tmux -2'
-alias dockerip="sudo docker inspect --format '{{ .NetworkSettings.IPAddress}}'"
+alias dockerip="docker inspect --format '{{ .NetworkSettings.IPAddress}}'"
 alias gp='git push'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias rubyv='rvm --ruby-version --create use'
-alias dockerip="sudo docker inspect --format '{{ .NetworkSettings.IPAddress}}'"
 alias es='emacsclient -c -a ""'
 alias gco='git clone git@github.com:'
 alias dkc='docker-compose'

@@ -18,6 +18,9 @@ PATH="/usr/local/heroku/bin:$PATH"
 # Set Node Modules Path
 PATH="./node_modules/.bin:$PATH"
 
+# Set Path for user pi installed
+PATH="$HOME/.local/bin:$PATH"
+
 export PATH
 
 ### Locale
