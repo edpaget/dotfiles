@@ -38,7 +38,6 @@ values."
      ;; navigations
      auto-completion
      helm
-     parinfer
      syntax-checking
 
      ;; languages
