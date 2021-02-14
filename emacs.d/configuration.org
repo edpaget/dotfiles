@@ -99,7 +99,7 @@
    #+END_SRC
 
    #+RESULTS: appearance
-   : ((font . Hack-12) (font . Hack-10) (vertical-scroll-bars) (left-fringe . -1) (right-fringe . -1))
+   : t
 
    Use Moe Dark as the the theme. 
 
@@ -193,26 +193,27 @@
 
   #+NAME: Spaces not Tabs
   #+BEGIN_SRC emacs-lisp
-    (setq-default indent-tabs-mode nil)
+    (setq-default indent-tabs-mode nil
+                  tab-width 2)
   #+END_SRC
 
   #+RESULTS: Spaces not Tabs
+  : 2
 
 * Magit
 
   #+name: magit
   #+begin_src emacs-lisp
     (use-package magit
-      :config (general-define-key
-               :states '(normal visual insert emacs)
-               :prefix "SPC"
-               :non-normal-prefix "C-SPC"
-               "g" '(:ignore t :which-key "buffers")
-               "gs" 'magit-status))
+      :general (:states '(normal visual insert emacs)
+                        :prefix "SPC"
+                        :non-normal-prefix "C-SPC"
+                        "g" '(:ignore t :which-key "buffers")
+                        "gb" 'magit-blame
+                        "gs" 'magit-status))
   #+end_src
 
   #+RESULTS: magit
-  : t
 
   #+RESULTS:
 
@@ -269,8 +270,23 @@
 
   #+RESULTS: org-mode
   : t
+* Autocompletion
+We'll configuration 
 * Languages
 ** General Lisp Stuff
+
+Let's define all the lisp modes we want to use so other modes can hook into them.
+
+#+Name: lisp-modes
+#+begin_src emacs-lisp
+  (defconst ed/lisp-mode-hook-list
+    '(clojure-mode-hook emacs-lisp-mode-hook lisp-mode-hook))
+#+end_src
+
+#+RESULTS: lisp-modes
+: ed/lisp-mode-hook-list
+
+We're going to have cool looking delimiters in all the modes.
 
 #+NAME: rainbow-parens
 #+begin_src emacs-lisp
@@ -285,12 +301,14 @@
 #+NAME: lispy
 #+begin_src emacs-lisp
   (use-package lispy
-    :ghook '(emacs-lisp-mode-hook lisp-mode-hook))
+    :ghook ed/lisp-mode-hook-list)
 
   (use-package lispyville
     :diminish (lispyville-mode-line-string " 🍰" " 🍰")
-    :ghook '(emacs-lisp-mode-hook lisp-mode-hook)
+    :ghook ed/lisp-mode-hook-list
     :config (lispyville-set-key-theme '(operators prettify c-w additional)))
+
 #+end_src
 
 #+RESULTS: lispy
+** Clojure
