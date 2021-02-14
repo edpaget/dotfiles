@@ -1,0 +1,296 @@
+#+TITLE: ED'S Emacs Configuration
+#+AUTHOR: Ed Paget
+
+* Rationale
+
+  I love vim, but I also like the whole Emacs ecosystem. Hopefully
+  with this config I can get the best of both, and never have to type
+  into a non-modal editor.
+
+* Package Configuration
+
+  I'm going to use [[https://github.com/jwiegley/use-package][use-package]] to autoload and configure
+  packages. Mostly because it seems pretty swag.
+
+  #+NAME: init-before
+  #+BEGIN_SRC emacs-lisp
+    (require 'package)
+    (setq package-archives
+          '(("melpa" . "https://melpa.org/packages/")
+            ("melpa-stable" . "https://stable.melpa.org/packages/")
+            ("org" . "https://orgmode.org/elpa/")
+            ("gnu" . "https://elpa.gnu.org/packages/")))
+
+    ;; Enable packages signature verification only if GPG is installed
+    (setq package-check-signature (when (executable-find "gpg") 'allow-unsigned))
+
+    ;; Change the below priorities if you prefer melpa-stable packages.
+    ;; Higher is better.
+    (setq package-archive-priorities
+          '(("melpa" .  4)
+            ("melpa-stable" . 3)
+            ("org" . 2)
+            ("gnu" . 1)))
+
+    (unless (package-installed-p 'use-package)
+      (package-refresh-contents)
+      (package-install 'use-package))
+
+    (eval-when-compile
+      (require 'use-package)
+      (require 'use-package-ensure))
+
+    (setq use-package-always-ensure t)    
+  #+END_SRC
+
+* Paths
+
+   Keep any Elisp files not installed from a package repository in the
+   =vendor/= directory:
+
+   #+NAME: init-before
+   #+BEGIN_SRC emacs-lisp
+     (defvar ed/vendor-directory (concat user-emacs-directory "vendor/"))
+     (add-to-list 'load-path ed/vendor-directory)
+   #+END_SRC
+
+   Keep temporary files in a separate directory:
+
+   #+NAME: init-before
+   #+BEGIN_SRC emacs-lisp
+     (defvar ed/ephemeral-directory "~/.emacs.ephemeral/")
+     (unless (file-exists-p ed/ephemeral-directory)
+       (mkdir ed/ephemeral-directory))
+   #+END_SRC
+
+   Add user bin to exec-path
+   #+NAME:
+   #+BEGIN_SRC emacs-lisp
+     (setq exec-path (append exec-path '("/home/edward/bin")))
+   #+END_SRC
+
+* Backup and Autosave Files
+   Store backup and autosave files in the =/tmp/= direcotry
+  
+   #+NAME: init-before
+   #+BEGIN_SRC emacs-lisp
+     (setq make-backup-files nil) ; stop creating backup~ files
+     (setq auto-save-default nil) ; stop creating #autosave# files
+   #+END_SRC
+
+   #+RESULTS: init-before
+
+   Keep Eshell's temporary files out of the way:
+
+   #+NAME: init-after
+   #+BEGIN_SRC emacs-lisp
+     (setq eshell-directory-name (expand-file-name "eshell/" ed/ephemeral-directory))
+   #+END_SRC   
+ 
+* Appearance and Theme
+   Hide parts of the GUI that we don't need, namely the graphical tool
+   bar and any scroll bars.
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp
+     (if (fboundp 'tool-bar-mode) (tool-bar-mode 0))
+     (if (fboundp 'scroll-bar-mode) (scroll-bar-mode 0))
+     (if (fboundp 'fringe-mode) (fringe-mode -1))
+   #+END_SRC
+
+   #+RESULTS: appearance
+   : ((font . Hack-12) (font . Hack-10) (vertical-scroll-bars) (left-fringe . -1) (right-fringe . -1))
+
+   Use Moe Dark as the the theme. 
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp
+     (use-package moe-theme
+       :config (moe-dark))
+   #+END_SRC
+
+   We also set the font while specifying a couple fallbacks.
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp
+     (cond
+      ((find-font (font-spec :name "Hack"))
+       (add-to-list 'default-frame-alist '(font . "Hack-10")))
+      )
+   #+END_SRC
+
+   Highlight the current line.
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp
+     (global-hl-line-mode)
+   #+END_SRC
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp
+     (setq ring-bell-function 'ignore)
+     (setq inhibit-startup-screen t)
+
+     ;; Set message for *scratch* buffer
+     (setq initial-scratch-message ";; Hello, Ed.\n")
+
+     ;; Never require full word answers
+     (defalias 'yes-or-no-p 'y-or-n-p)
+
+     (setq linum-format "%4d ")
+     (add-hook 'prog-mode-hook 'linum-mode)
+   #+END_SRC
+
+  Add support for emojis
+
+  #+NAME: apperance
+  #+begin_src emacs-lisp
+    (use-package emojify
+      :hook (after-init . global-emojify-mode))
+  #+end_src
+
+  #+RESULTS: apperance
+  | global-emojify-mode | global-emojify=mode | tramp-register-archive-file-name-handler | magit-maybe-define-global-key-bindings | magit-auto-revert-mode--init-kludge | magit-startup-asserts | magit-version |
+
+* Evil Configuration
+
+  #+NAME: evil
+  #+BEGIN_SRC emacs-lisp
+    (use-package evil
+      :init (setq evil-want-integration t)
+      (setq evil-want-keybinding nil)
+      :config (evil-mode))
+
+    (use-package evil-collection
+      :after evil
+      :ensure t
+      :config
+      (evil-collection-init))
+  #+END_SRC
+
+  #+RESULTS: evil
+  : t
+
+  Going to try to use general and which key to help me remember how to use my new configuration
+
+  #+name which-key
+  #+begin_src emacs-lisp
+    (use-package which-key
+      :config (which-key-mode))
+  #+end_src
+
+  #+RESULTS:
+  | /usr/bin | /bin | /usr/sbin | /sbin | /usr/local/Cellar/emacs-head@27/27.1_1/libexec/emacs/27.1/x86_64-apple-darwin20.2.0 | /home/edward/bin |
+
+  #+name general
+  #+begin_src emacs-lisp
+    (use-package general)
+  #+end_src
+
+  #+RESULTS:
+
+* Spaces Not Tabs
+
+  #+NAME: Spaces not Tabs
+  #+BEGIN_SRC emacs-lisp
+    (setq-default indent-tabs-mode nil)
+  #+END_SRC
+
+  #+RESULTS: Spaces not Tabs
+
+* Magit
+
+  #+name: magit
+  #+begin_src emacs-lisp
+    (use-package magit
+      :config (general-define-key
+               :states '(normal visual insert emacs)
+               :prefix "SPC"
+               :non-normal-prefix "C-SPC"
+               "g" '(:ignore t :which-key "buffers")
+               "gs" 'magit-status))
+  #+end_src
+
+  #+RESULTS: magit
+  : t
+
+  #+RESULTS:
+
+* Ivy Configuration
+
+  #+name: ivy
+  #+begin_src emacs-lisp
+    (use-package ivy
+      :config (ivy-mode)
+      :general (:states '(normal visual insert emacs)
+                        :prefix "SPC"
+                        :non-normal-prefix "C-SPC"
+                        "b" '(:ignore t :which-key "buffers")
+                        "bb" 'ivy-switch-buffer))
+  #+end_src
+
+  #+RESULTS: ivy
+
+  #+name: counsel
+  #+begin_src emacs-lisp
+    (use-package counsel
+      :config (counsel-mode)
+      :general (:states '(normal visual insert emacs)
+                        :prefix "SPC"
+                        :non-normal-prefix "C-SPC"
+                        "SPC" 'counsel-M-x
+                        "f" '(:ignore t :which-key "files")
+                        "ff" 'counsel-find-file))
+  #+end_src
+
+  #+RESULTS: counsel
+
+  Let's use projectile and integrate it with ivy to manage project navigation
+
+  #+Name: projectile
+#+begin_src emacs-lisp
+    (use-package projectile
+      :init (projectile-global-mode +1)
+      :config (setq project-enable-caching t)
+      :general (:states '(normal visual insert emacs)
+                :prefix "SPC"
+                        :non-normal-prefix "C-SPC"
+                        "p" '(:keymap projectile-command-map :package projectile)))
+#+end_src
+
+#+RESULTS: projectile
+
+* Org mode
+
+  #+name: org-mode
+  #+begin_src emacs-lisp
+    (setq org-src-tab-acts-natively t)
+  #+end_src
+
+  #+RESULTS: org-mode
+  : t
+* Languages
+** General Lisp Stuff
+
+#+NAME: rainbow-parens
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+#+RESULTS: rainbow-parens
+| rainbow-delimiters-mode | rainbow-delimiters | rainbow-delimiers | rainbow-delimiers-mode | linum-mode |
+
+
+#+NAME: lispy
+#+begin_src emacs-lisp
+  (use-package lispy
+    :ghook '(emacs-lisp-mode-hook lisp-mode-hook))
+
+  (use-package lispyville
+    :diminish (lispyville-mode-line-string " 🍰" " 🍰")
+    :ghook '(emacs-lisp-mode-hook lisp-mode-hook)
+    :config (lispyville-set-key-theme '(operators prettify c-w additional)))
+#+end_src
+
+#+RESULTS: lispy

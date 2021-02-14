@@ -1,4 +1,11 @@
 .ruby-version
+/emacs.d/configuration.el
+/emacs.d/projectile*
+/emacs.d/auto-save-list/
+/emacs.d/elpa/
+/emacs.d/emojis/
+/emacs.d/recentf/
+/emacs.d/transient/
 /emacs.bak/.cask/
 /emacs.bak/emacs.el
 /emacs.bak/auto-save-list/
@@ -14,4 +21,5 @@ emacs.bak/tramp
 lein/repl-history
 sbt/0.13/
 sbt/boot/
+*~
 
