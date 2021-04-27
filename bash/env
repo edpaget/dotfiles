@@ -31,6 +31,9 @@ PATH="$PYENV_ROOT/bin:$PATH"
 # Set PATH for Postgresql
 PATH="/usr/local/opt/postgresql@11/bin:$PATH"
 
+# Set PATH for avr-gcc and armg gcc
+PATH="/usr/local/opt/arm-gcc-bin@8/bin:/usr/local/opt/avr-gcc@8/bin:$PATH"
+
 export PATH
 
 ### Locale

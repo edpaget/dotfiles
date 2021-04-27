@@ -10,7 +10,8 @@
 * Package Configuration
 
   I'm going to use [[https://github.com/jwiegley/use-package][use-package]] to autoload and configure
-  packages. Mostly because it seems pretty swag.
+  packages. This lets us combine loading packages with all sort of
+  configuration using diminish, general, etc.
 
   #+NAME: init-before
   #+BEGIN_SRC emacs-lisp
@@ -64,9 +65,11 @@
    #+END_SRC
 
    Add user bin to exec-path
-   #+NAME:
+   #+NAME: init-before
    #+BEGIN_SRC emacs-lisp
-     (setq exec-path (append exec-path '("/home/edward/bin")))
+     (use-package exec-path-from-shell
+       :init
+       (exec-path-from-shell-initialize))
    #+END_SRC
 
 * Backup and Autosave Files
@@ -79,6 +82,7 @@
    #+END_SRC
 
    #+RESULTS: init-before
+   : t
 
    Keep Eshell's temporary files out of the way:
 
@@ -99,7 +103,7 @@
    #+END_SRC
 
    #+RESULTS: appearance
-   : t
+   : ((font . Hack-12) (vertical-scroll-bars) (left-fringe . -1) (right-fringe . -1))
 
    Use Moe Dark as the the theme. 
 
@@ -115,8 +119,7 @@
    #+BEGIN_SRC emacs-lisp
      (cond
       ((find-font (font-spec :name "Hack"))
-       (add-to-list 'default-frame-alist '(font . "Hack-10")))
-      )
+       (add-to-list 'default-frame-alist '(font . "Hack-12"))))
    #+END_SRC
 
    Highlight the current line.
@@ -136,9 +139,6 @@
 
      ;; Never require full word answers
      (defalias 'yes-or-no-p 'y-or-n-p)
-
-     (setq linum-format "%4d ")
-     (add-hook 'prog-mode-hook 'linum-mode)
    #+END_SRC
 
   Add support for emojis
@@ -146,25 +146,41 @@
   #+NAME: apperance
   #+begin_src emacs-lisp
     (use-package emojify
-      :hook (after-init . global-emojify-mode))
+      :diminish
+      :config
+      (setq emojify-program-contexts '(comments))
+      :hook
+      (after-init . global-emojify-mode))
   #+end_src
 
   #+RESULTS: apperance
-  | global-emojify-mode | global-emojify=mode | tramp-register-archive-file-name-handler | magit-maybe-define-global-key-bindings | magit-auto-revert-mode--init-kludge | magit-startup-asserts | magit-version |
+  | evil-mode | global-emojify-mode | tramp-register-archive-file-name-handler | magit-maybe-define-global-key-bindings | table--make-cell-map |
 
 * Evil Configuration
 
   #+NAME: evil
   #+BEGIN_SRC emacs-lisp
     (use-package evil
-      :init (setq evil-want-integration t)
-      (setq evil-want-keybinding nil)
-      :config (evil-mode))
+      :diminish undo-tree-mode
+      :hook (after-init . evil-mode)
+      :init
+      (setq evil-want-integration t
+            evil-want-C-u-scroll t
+            evil-want-keybinding nil)
+      :preface
+      (defun ed/save-and-kill ()
+        (interactive)
+        (save-buffer)
+        (kill-this-buffer))
+      :config
+      (evil-ex-define-cmd "wq" #'ed/save-and-kill))
 
     (use-package evil-collection
       :after evil
       :ensure t
-      :config
+      :custom
+      (evil-collection-setup-minibuffer t)
+      :init
       (evil-collection-init))
   #+END_SRC
 
@@ -184,7 +200,10 @@
 
   #+name general
   #+begin_src emacs-lisp
-    (use-package general)
+    (use-package general
+      :ensure t
+      :config
+      (general-override-mode +1))
   #+end_src
 
   #+RESULTS:
@@ -208,7 +227,7 @@
       :general (:states '(normal visual insert emacs)
                         :prefix "SPC"
                         :non-normal-prefix "C-SPC"
-                        "g" '(:ignore t :which-key "buffers")
+                        "g" '(:ignore t :which-key "Git")
                         "gb" 'magit-blame
                         "gs" 'magit-status))
   #+end_src
@@ -222,6 +241,7 @@
   #+name: ivy
   #+begin_src emacs-lisp
     (use-package ivy
+      :diminish
       :config (ivy-mode)
       :general (:states '(normal visual insert emacs)
                         :prefix "SPC"
@@ -235,21 +255,36 @@
   #+name: counsel
   #+begin_src emacs-lisp
     (use-package counsel
+      :diminish
       :config (counsel-mode)
-      :general (:states '(normal visual insert emacs)
-                        :prefix "SPC"
-                        :non-normal-prefix "C-SPC"
-                        "SPC" 'counsel-M-x
-                        "f" '(:ignore t :which-key "files")
-                        "ff" 'counsel-find-file))
+      :general
+      (:states '(normal visual insert emacs)
+               :prefix "SPC"
+               :non-normal-prefix "C-SPC"
+               "SPC" 'counsel-M-x
+               "f" '(:ignore t :which-key "files")
+               "ff" 'counsel-find-file)
+      (:keymaps 'counsel-find-file-map
+                "C-h" 'counsel-up-directory
+                "C-l" 'counsel-down-directory))
   #+end_src
 
   #+RESULTS: counsel
+  
+  #+begin_src emacs-lisp
+    (use-package swiper
+      :ensure
+      :general
+      (:keymaps 'ivy-minibuffer-map
+       "C-l" 'ivy-alt-done))
+  #+end_src
+
+  #+RESULTS:
 
   Let's use projectile and integrate it with ivy to manage project navigation
 
   #+Name: projectile
-#+begin_src emacs-lisp
+  #+begin_src emacs-lisp
     (use-package projectile
       :init (projectile-global-mode +1)
       :config (setq project-enable-caching t)
@@ -257,9 +292,9 @@
                 :prefix "SPC"
                         :non-normal-prefix "C-SPC"
                         "p" '(:keymap projectile-command-map :package projectile)))
-#+end_src
+  #+end_src
 
-#+RESULTS: projectile
+  #+RESULTS: projectile
 
 * Org mode
 
@@ -270,8 +305,48 @@
 
   #+RESULTS: org-mode
   : t
-* Autocompletion
-We'll configuration 
+* Autocompletion and Language Support
+  Including LSP as a default way to integrate with language servers
+
+  #+Name: lsp-mode
+  #+begin_src emacs-lisp
+    (use-package lsp-mode
+      :diminish
+      :hook ((rust-mode . lsp)
+             (lsp-mode . lsp-enable-which-key-integration))
+      :commands lsp)
+
+    (use-package lsp-ivy
+      :commands lsp-ivy-workspace-symbol)
+  #+end_src
+
+  Flycheck for syntax checking/linting
+
+  #+Name: flycheck-mode
+  #+begin_src emacs-lisp
+    (use-package flycheck
+      :hook (prog-mode . flycheck-mode)
+      :demand t
+      :general (:states '(normal)
+                        :prefix "SPC"
+                        "f" '(:ignore t :which-key "flycheck")
+                        "fn" 'next-error
+                        "fp" 'previous-error))
+  #+end_src
+
+  Company for autocompletion using lsp backend
+
+  #+Name: company-mode
+  #+begin_src emacs-lisp
+    (use-package company
+      :ensure t
+      :diminish company-mode
+      :hook (prog-mode . company-mode)
+      :config (setq company-tooltip-align-annotations t)
+      (setq company-minimum-prefix-length 1)
+      (setq company-async-timeout 10))
+  #+end_src
+  
 * Languages
 ** General Lisp Stuff
 
@@ -311,4 +386,36 @@ We're going to have cool looking delimiters in all the modes.
 #+end_src
 
 #+RESULTS: lispy
-** Clojure
+** Rust
+
+   Use Rust-Mode and the LSP integration to provide ide-like features for rust
+
+   
+  #+Name: rust-mode
+  #+begin_src emacs-lisp
+    (use-package rust-mode
+      :init
+      (which-function-mode 1)
+      (setq compilation-error-regexp-alist-alist
+            (cons '(cargo "^\\([^ \n]+\\):\\([0-9]+\\):\\([0-9]+\\): \\([0-9]+\\):\\([0-9]+\\) \\(?:[Ee]rror\\|\\([Ww]arning\\)\\):" 1 (2 . 4) (3 . 5) (6))
+                  compilation-error-regexp-alist-alist))
+      :config
+      (setq rust-format-on-save t))
+  #+end_src
+
+  Include Cargo Helpers
+  
+  #+Name: rust-mode
+  #+begin_src emacs-lisp
+    (use-package cargo
+      :hook (rust-mode . cargo-minor-mode)
+      :diminish cargo-minor-mode)
+
+    (use-package toml-mode)
+  #+end_src
+
+  #+Name: rust-mode
+  #+begin_src emacs-lisp
+    (use-package flycheck-rust
+      :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+  #+end_src
