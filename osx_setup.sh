@@ -1,26 +1,10 @@
 #!/bin/bash
 
 # taps
-brew tap adoptopenjdk/openjdk
-brew tap railwaycat/emacsport
+brew tap daviderestivo/emacs-head
 
 # formulas
 brew install coreutils
-brew install nvm
-brew install docker
-brew install docker-machine
-brew install docker-compose
-brew install leiningen
-brew install postgresql@11
-brew install pyenv
-brew install pyenv-virtualenv
+brew install emacs-head --with-cocoa --with-retro-icon-sink-bw
 
 # casks
-brew cask install firefox
-brew cask install google-chrome
-brew cask install emacs-mac-spacemacs-icon
-brew cask install virtualenv
-brew cask install iterm2
-brew cask install adoptopenjdk8
-brew cask install zoomus
-brew cask install spotify
