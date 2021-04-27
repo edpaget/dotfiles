@@ -38,18 +38,3 @@ export PATH
 
 ### Locale
 export LANG=en_US.UTF-8
-
-if [ `uname` == "Linux" ]; then
-  ### Android SDK
-  export ANDROID_HOME=~/android-sdk/
-fi
-
-if [ `uname` == "Darwin" ]; then
-  ### Fastlane
-  export PATH="$HOME/.fastlane/bin:$PATH"
-  ### Android SDK
-  export ANDROID_HOME=~/Library/Android/sdk
-  export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH"
-fi
-
-eval $(docker-machine env)
