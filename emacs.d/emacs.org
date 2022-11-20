@@ -1,0 +1,181 @@
+#+TITLE: ED'S Emacs Configuration
+#+AUTHOR: Ed Paget
+
+* Rationale
+* Finding on the Internet
+
+  I keep all of my dotfiles, including this emacs config, in my
+  [[https://github.com/edpaget/dotfiles/][dotfiles repo]] on GitHub.
+* Installation
+** Requirements
+* Package Management
+
+#+NAME: package-management
+#+BEGIN_SRC emacs-lisp
+  (defvar bootstrap-version)
+
+  (let ((bootstrap-file
+	  (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+      (url-retrieve-synchronously
+	  "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	  'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+  (straight-use-package 'use-package)
+#+END_SRC
+
+* Paths
+   Keep any Elisp files not installed from a package repository in the
+   =vendor/= directory:
+
+   #+NAME: init-before
+   #+BEGIN_SRC emacs-lisp
+     (defvar ed/vendor-directory (concat user-emacs-directory "vendor/"))
+     (add-to-list 'load-path ed/vendor-directory)
+   #+END_SRC
+
+   Keep temporary files in a separate directory:
+
+   #+NAME: init-before
+   #+BEGIN_SRC emacs-lisp
+     (defvar ed/ephemeral-directory "~/.emacs.ephemeral/")
+     (unless (file-exists-p ed/ephemeral-directory)
+       (mkdir ed/ephemeral-directory))
+   #+END_SRC
+
+   Add user bin to exec-path
+   #+NAME: init-before
+   #+BEGIN_SRC emacs-lisp
+     (use-package exec-path-from-shell
+       :straight t
+       :init
+       (exec-path-from-shell-initialize))
+   #+END_SRC
+
+* Backup and Autosave Files
+   Store backup and autosave files in the =/tmp/= direcotry
+  
+   #+NAME: init-before
+   #+BEGIN_SRC emacs-lisp
+     (setq make-backup-files nil) ; stop creating backup~ files
+     (setq auto-save-default nil) ; stop creating #autosave# files
+   #+END_SRC
+
+   #+RESULTS: init-before
+   : t
+
+   Keep Eshell's temporary files out of the way:
+
+   #+NAME: init-after
+   #+BEGIN_SRC emacs-lisp
+     (setq eshell-directory-name (expand-file-name "eshell/" ed/ephemeral-directory))
+   #+END_SRC   
+ 
+* Appearance and Theme
+   Hide parts of the GUI that we don't need, namely the graphical tool
+   bar and any scroll bars.
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp
+     (if (fboundp 'tool-bar-mode) (tool-bar-mode 0))
+     (if (fboundp 'scroll-bar-mode) (scroll-bar-mode 0))
+     (if (fboundp 'fringe-mode) (fringe-mode -1))
+   #+END_SRC
+
+   Use Moe Dark as the the theme. 
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp
+     (use-package moe-theme
+       :straight t
+       :config (moe-dark))
+   #+END_SRC
+
+   Highlight the current line.
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp
+     (global-hl-line-mode)
+   #+END_SRC
+
+   #+NAME: appearance
+   #+BEGIN_SRC emacs-lisp
+     (setq ring-bell-function 'ignore)
+     (setq inhibit-startup-screen t)
+
+     ;; Set message for *scratch* buffer
+     (setq initial-scratch-message ";; Hello, Ed.\n")
+
+     ;; Never require full word answers
+     (defalias 'yes-or-no-p 'y-or-n-p)
+   #+END_SRC
+
+  Add support for emojis
+
+  #+NAME: apperance
+  #+begin_src emacs-lisp
+    (use-package emojify
+      :diminish
+      :straight t
+      :config
+      (setq emojify-program-contexts '(comments))
+      :hook
+      (after-init . global-emojify-mode))
+  #+end_src    
+* Evil and General
+#+NAME: key-binding-modes
+#+BEGIN_SRC emacs-lisp
+  (use-package evil
+	      :straight t
+	      :ensure t
+	      :init
+	      (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+	      (setq evil-want-keybinding nil)
+	      :config
+	      (evil-mode 1))
+
+  (use-package evil-collection
+	      :after evil
+	      :straight t
+	      :ensure t
+	      :config
+	      (evil-collection-init))
+
+  (use-package which-key
+	       :straight t
+	       :config
+	       (which-key-mode))
+
+  (use-package general
+	       :straight t
+	       :config
+	       (general-override-mode +1))
+
+  (general-create-definer ep/general-def
+			  :states '(normal visual insert emacs)
+			  :non-normal-prefix "C-SPC"
+			  :prefix "SPC")
+#+END_SRC
+
+* Global Keybinds
+#+NAME: global-keybinds
+#+BEGIN_SRC emacs-lisp
+  (ep/general-def
+    :keymap 'emacs-lisp-mode-map
+    "xe" 'eval-last-sexp)
+#+END_SRC
+
+* Selectrum
+#+NAME: selectrum
+#+BEGIN_SRC emacs-lisp
+  (use-package selectrum
+	       :straight t
+	       :config
+	       (selectrum-mode +1))
+
+#+END_SRC
