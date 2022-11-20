@@ -157,6 +157,7 @@ Add support for emojis
     (evil-collection-init))
 
   (use-package which-key
+    :diminish
     :straight t
     :config
     (which-key-mode))
@@ -175,9 +176,7 @@ Add support for emojis
 * Global Keybinds
 #+NAME: global-keybinds
 #+BEGIN_SRC emacs-lisp
-  (ep/general-def
-    :keymap 'emacs-lisp-mode-map
-    "xe" 'eval-last-sexp)
+  
 #+END_SRC
 
 * Selectrum
@@ -187,11 +186,22 @@ Add support for emojis
     :straight t
     :general
     (ep/general-def
+      "bb" 'switch-to-buffer
       "ff" 'find-file
       ":" 'execute-extended-command)
     :config
     (selectrum-mode +1))
+#+END_SRC
 
+Using it with prescient
+
+#+NAME: selectrum
+#+BEGIN_SRC emacs-lisp
+  (use-package selectrum-prescient
+    :straight t
+    :config
+    (selectrum-prescient-mode +1)
+    (prescient-persist-mode +1))
 #+END_SRC
 
 * Magit
@@ -202,7 +212,64 @@ Add support for emojis
     :straight t
     :general
     (ep/general-def
-      "g" '(:ignore t :which-key "Git")
+      "g" '(:ignore t :which-key "git")
       "gg" 'magit-status
       "gb" 'magit-blame))
 #+END_SRC
+
+* Language Support
+** Org-Mode
+
+#+NAME: org-mode
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-tab-acts-natively t)
+
+  (ep/general-def
+    :keymap 'org-mode
+
+    "i" '(:ignore t :which-key "insert")
+    "ih" 'org-insert-heading-respect-content
+    "iH" 'org-insert-heading
+    "il" 'org-web-tools-insert-link-for-url
+    "ic" 'org-insert-structure-template
+
+    "b" '(:ignore t :which-key "blocks")
+    "be" 'org-edit-src-code)
+
+  (ep/general-def
+    :keymap 'org-src-mode
+    "b" '(:ignore t :which-key "blocks")
+    "bs" 'org-edit-src-save
+    "bk" 'org-edit-src-abort
+    "bx" 'org-edit-src-exit)
+#+END_SRC
+
+** Shared Lisp settings
+
+Let's define all the lisp modes we want to use so other modes can hook into them.
+
+#+Name: lisp-settings
+#+begin_src emacs-lisp
+  (defconst ed/lisp-mode-hook-list
+    '(emacs-lisp-mode-hook lisp-mode-hook))
+
+  (defconst ed/lisp-mode-map-list
+    '(emacs-lisp-mode-map))
+#+end_src
+
+Eval sexps
+
+#+Name: lisp-settings
+#+begin_src emacs-lisp
+(ep/general-def
+    :keymaps 'ed/list-mode-map-list
+    "xe" 'eval-last-sexp)
+#+end_src
+
+We're going to have cool looking delimiters in all the modes.
+
+#+NAME: lisp-settings
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
