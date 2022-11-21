@@ -25,3 +25,4 @@ sbt/0.13/
 sbt/boot/
 *~
 
+/emacs.d/var/

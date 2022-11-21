@@ -29,6 +29,15 @@ I keep all of my dotfiles, including this emacs config, in my
   (straight-use-package 'use-package)
 #+END_SRC
 
+Add diminish to hide minor modes
+
+#+name: appearance
+#+begin_src emacs-lisp
+  (use-package diminish
+    :straight t
+    :demand t)
+#+end_src
+
 * Paths
 Keep any Elisp files not installed from a package repository in the
 =vendor/= directory:
@@ -146,6 +155,7 @@ Add support for emojis
     :init
     (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
     (setq evil-want-keybinding nil)
+    (setq evil-want-C-u-scroll t)
     :config
     (evil-mode 1))
 
@@ -167,10 +177,15 @@ Add support for emojis
     :config
     (general-override-mode +1))
 
-  (general-create-definer ep/general-def
+  (general-create-definer ep/general-leader-def
     :states '(normal visual insert emacs)
     :non-normal-prefix "C-SPC"
     :prefix "SPC")
+
+  (general-create-definer ep/general-local-leader-def
+    :states '(normal visual insert emacs)
+    :non-normal-prefix "C-SPC m"
+    :prefix "SPC ")
 #+END_SRC
 
 * Global Keybinds
@@ -185,7 +200,7 @@ Add support for emojis
   (use-package selectrum
     :straight t
     :general
-    (ep/general-def
+    (ep/general-leader-def
       "bb" 'switch-to-buffer
       "ff" 'find-file
       ":" 'execute-extended-command)
@@ -211,20 +226,40 @@ Using it with prescient
   (use-package magit
     :straight t
     :general
-    (ep/general-def
+    (ep/general-leader-def
       "g" '(:ignore t :which-key "git")
       "gg" 'magit-status
       "gb" 'magit-blame))
 #+END_SRC
 
+* Autocompletion
+
+#+name: autocompletion
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :diminish 
+    :ensure t
+    :config
+    (marginalia-mode))
+#+end_src
+
 * Language Support
+** General prog-mode stuff
+We're going to have cool looking delimiters in all the modes.
+
+#+NAME: prog=mode
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :straight t
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
 ** Org-Mode
 
 #+NAME: org-mode
 #+BEGIN_SRC emacs-lisp
   (setq org-src-tab-acts-natively t)
 
-  (ep/general-def
+  (ep/general-local-leader-def
     :keymap 'org-mode
 
     "i" '(:ignore t :which-key "insert")
@@ -236,7 +271,7 @@ Using it with prescient
     "b" '(:ignore t :which-key "blocks")
     "be" 'org-edit-src-code)
 
-  (ep/general-def
+  (ep/general-local-leader-def
     :keymap 'org-src-mode
     "b" '(:ignore t :which-key "blocks")
     "bs" 'org-edit-src-save
@@ -262,14 +297,8 @@ Eval sexps
 #+Name: lisp-settings
 #+begin_src emacs-lisp
 (ep/general-def
-    :keymaps 'ed/list-mode-map-list
+    :keymaps ed/lisp-mode-map-list
     "xe" 'eval-last-sexp)
 #+end_src
 
-We're going to have cool looking delimiters in all the modes.
 
-#+NAME: lisp-settings
-#+begin_src emacs-lisp
-  (use-package rainbow-delimiters
-    :hook (prog-mode . rainbow-delimiters-mode))
-#+end_src
