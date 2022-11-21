@@ -26,3 +26,4 @@ sbt/boot/
 *~
 
 /emacs.d/var/
+/emacs.d/history
