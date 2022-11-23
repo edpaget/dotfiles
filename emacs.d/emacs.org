@@ -315,16 +315,66 @@ Using it with orderless
 
 #+name: projects
 #+begin_src emacs-lisp
-    (use-package project
-      :straight t
-      :diminish
-      :general
-      (ep/general-leader-def
-        "p" '(:ignore t :which-key "project")
-        "pp" 'project-switch-project
-        "pf" 'project-find-file))
+  (use-package projectile
+    :straight t
+    :diminish
+    :general
+    (ep/general-leader-def
+      "p" '(:ignore t :which-key "project")
+      "p!" 'projectile-run-shell-command-in-root
+      "p&" 'projectile-run-async-shell-command-in-root
+      "p%" 'projectile-replace-regexp
+      "pa" 'projectile-toggle-between-implementation-and-test
+      "pb" 'projectile-switch-to-buffer
+      "pc" 'projectile-compile-project
+      "pu" 'projectile-run-project
+      "pd" 'projectile-find-dir
+      "pD" 'projectile-dired
+      "pe" 'projectile-edit-dir-locals
+      "pf" 'projectile-find-file
+      "pF" 'projectile-find-file-dwim
+      "pE" 'projectile-find-references
+      "pg" 'projectile-find-tag
+      "pG" 'projectile-regenerate-tags
+      "pi" 'projectile-install-project
+      "pI" 'projectile-invalidate-cache
+      "pk" 'projectile-kill-buffers
+      "pp" 'projectile-switch-project
+      "pr" 'projectile-recentf
+      "pR" 'projectile-replace
+      "pT" 'projectile-test-project
+      "pv" 'projectile-vc)
+    :config
+    (projectile-mode +1))
 #+end_src
 
+* Window Manager
+Trying to use Edwina as a tiling manager
+
+#+name: window-manager
+#+begin_src emacs-lisp
+  (use-package edwina
+    :straight t
+    :general
+    (ep/general-leader-def
+      :keymaps 'edwina-mode-map
+      "w" '(:ignore t :which-key "wm")
+      "wr" 'edwina-arrange
+      "wn" 'edwina-select-next-window
+      "wp" 'edwina-select-previous-window
+      "wN" 'edwina-swap-next-window
+      "wP" 'edwina-swap-previous-window
+      "w\[" 'edwina-dec-mfact
+      "w\]" 'edwina-inc-mfact
+      "wd" 'edwina-dec-nmaster
+      "wi" 'edwina-inc-nmaster
+      "wx" 'edwina-delete-window
+      "wz" 'edwina-zoom
+      "wc" 'edwina-clone-window)
+    :config
+    (setq display-buffer-base-action '(display-buffer-below-selected))
+    (edwina-mode 1))
+#+end_src
 * Language Support
 ** General prog-mode stuff
 We're going to have cool looking delimiters in all the modes.
