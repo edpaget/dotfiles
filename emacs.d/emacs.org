@@ -507,6 +507,12 @@ Eval sexps
 #+begin_src emacs-lisp
   (use-package rustic
     :straight t
+    :general
+    (ep/general-local-leader-def
+      "c" '(:ignore t :which-key "cargo")
+      "ct" 'rustic-cargo-run-test
+      "ca" 'rustic-cargo-add
+      "cA" 'rustic-cargo-auto-add-missing-dependencies)
     :config (setq rustic-lsp-client 'eglot))
 #+end_src
 
