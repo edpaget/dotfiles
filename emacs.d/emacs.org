@@ -118,6 +118,11 @@ Highlight the current line.
 
 #+NAME: appearance
 #+BEGIN_SRC emacs-lisp
+  (add-hook 'window-setup-hook 'toggle-frame-fullscreen t)
+#+END_SRC
+
+#+NAME: appearance
+#+BEGIN_SRC emacs-lisp
   (setq ring-bell-function 'ignore)
   (setq inhibit-startup-screen t)
 
@@ -339,13 +344,53 @@ Using it with orderless
       "pi" 'projectile-install-project
       "pI" 'projectile-invalidate-cache
       "pk" 'projectile-kill-buffers
-      "pp" 'projectile-switch-project
+      "pP" 'projectile-switch-project
       "pr" 'projectile-recentf
       "pR" 'projectile-replace
       "pT" 'projectile-test-project
       "pv" 'projectile-vc)
     :config
     (projectile-mode +1))
+#+end_src
+
+#+name: projects
+#+begin_src emacs-lisp
+  (use-package perspective
+    :straight t
+    :init
+    (setq persp-suppress-no-prefix-key-warning t)
+    :general
+    (ep/general-leader-def
+      "P" '(:ignore t :which-key "perspective")
+      "Ps" 'persp-switch
+      "Pk" 'persp-remove-buffer
+      "Pc" 'persp-kill
+      "Pr" 'persp-rename
+      "Pa" 'persp-add-buffer
+      "PA" 'persp-set-buffer
+      "Pb" 'persp-switch-to-buffer
+      "PB" 'persp-switch-to-scratch-buffer
+      "Pi" 'persp-import
+      "Pn" 'persp-next
+      "Pp" 'persp-prev
+      "Pm" 'persp-merge
+      "Pu" 'persp-unmerge
+      "Pg" 'persp-add-buffer-to-frame-global
+      "Ps" 'persp-state-save
+      "PL" 'persp-state-load
+      "P`" 'persp-switch-by-number)
+    :config
+    (persp-mode))
+#+end_src
+
+#+name: projects
+#+begin_src emacs-lisp
+  (use-package persp-projectile
+    :straight t
+    :general
+    (ep/general-leader-def
+      "pp" 'projectile-persp-switch-project))
+  
 #+end_src
 
 * Window Manager
@@ -355,9 +400,10 @@ Trying to use Edwina as a tiling manager
 #+begin_src emacs-lisp
   (use-package edwina
     :straight t
+    :init
+    (setq display-buffer-base-action '(display-buffer-below-selected))
     :general
     (ep/general-leader-def
-      :keymaps 'edwina-mode-map
       "w" '(:ignore t :which-key "wm")
       "wr" 'edwina-arrange
       "wn" 'edwina-select-next-window
@@ -372,9 +418,9 @@ Trying to use Edwina as a tiling manager
       "wz" 'edwina-zoom
       "wc" 'edwina-clone-window)
     :config
-    (setq display-buffer-base-action '(display-buffer-below-selected))
     (edwina-mode 1))
 #+end_src
+
 * Language Support
 ** General prog-mode stuff
 We're going to have cool looking delimiters in all the modes.
