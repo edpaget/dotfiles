@@ -450,7 +450,11 @@ We're going to have cool looking delimiters in all the modes.
 #+name: prog-mode
 #+begin_src emacs-lisp
   (use-package eglot
-    :straight t)
+    :straight t
+    :defer t
+    :config
+    (add-to-list 'eglot-server-programs
+                 '(ruby-mode . ("bundle" "exec" "ruby-lsp"))))
 #+end_src
 
 ** Org-Mode
@@ -509,6 +513,7 @@ Eval sexps
     :straight t
     :general
     (ep/general-local-leader-def
+      :keymaps 'rustic-mode
       "c" '(:ignore t :which-key "cargo")
       "ct" 'rustic-cargo-run-test
       "ca" 'rustic-cargo-add
@@ -523,4 +528,50 @@ Eval sexps
   (use-package go-mode
     :straight t
     :hook (go-mode . eglot-ensure))
+#+end_src
+
+** Ruby
+
+#+name: ruby
+#+begin_src emacs-lisp
+  (use-package ruby-mode
+    :straight t
+    :hook (ruby-mode . eglot-ensure))
+#+end_src
+
+#+name: ruby
+#+begin_src emacs-lisp
+  (use-package rspec-mode
+    :straight t
+    :general
+    (ep/general-local-leader-def
+      :keymaps 'rspec-verifiable-mode
+      "t" '(:ignore t :which-key "test")
+      "tt" 'rspec-toggle-spec-and-target)
+    (ep/general-local-leader-def
+      :keymaps 'rspec-mode
+      "t" '(:ignore t :which-key "test")
+      "ts" 'rspec-verify-single
+      "td" 'rspec-toggle-example-pendingness))
+#+end_src
+
+#+name: ruby
+#+begin_src emacs-lisp
+  (use-package rubocop
+    :straight t
+    :hook ruby-mode
+    :general
+    (ep/general-local-leader-def
+      :keymaps 'rubocop-mode
+      "c" '(:ignore true :which-key "rubocop")
+      "cp" 'rubocop-check-project
+      "cF" 'rubocop-autocorrect-current-file))
+#+end_src
+
+#+name: ruby
+#+begin_src emacs-lisp
+  (use-package rvm
+    :straight t
+    :config
+    (add-hook 'ruby-mode-hook (lambda () (rvm-activate-corresponding-ruby))))
 #+end_src
