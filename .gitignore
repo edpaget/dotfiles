@@ -27,3 +27,5 @@ sbt/boot/
 
 /emacs.d/var/
 /emacs.d/history
+/emacs.d/racket-mode/
+/emacs.d/.lsp-session-v1

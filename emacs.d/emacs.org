@@ -227,7 +227,7 @@ Add support for emojis
     :general
     (ep/general-leader-def
       "bb" 'switch-to-buffer
-      "ff" 'find-file
+      "ff" 'find-file-other-window
       ":" 'execute-extended-command)
     :init
     (vertico-mode))
@@ -294,27 +294,66 @@ Using it with orderless
     :straight t
     :diminish
     :init
+    (setq completion-styles '(orderless partial-completion basic)
+          completion-category-defaults nil
+          completion-category-overrides nil)
     (global-corfu-mode))
 #+end_src
 
 #+name: completion
 #+begin_src emacs-lisp
-  (use-package consult
-    :straight t
-    :general
-    (ep/general-leader-def
-      :keymaps 'override
-      ;; yank pop
-      "yp" 'consult-yank-pop
+    (use-package consult
+      :straight t
+      :general
+      (ep/general-leader-def
+        :keymaps 'override
+        ;; yank pop
+        "yp" 'consult-yank-pop
 
-      ;; errors
-      "El" 'consult-flymake)
+        ;; errors
+        "El" 'consult-flymake)
+      :config
+      (consult-customize
+       consult-buffer consult-project-buffer
+       consult-recent-file find-file
+       :preview-key (kbd "C-a")))
+
+  (use-package consult-lsp
+    :straight t
     :config
-    (consult-customize
-     consult-buffer consult-project-buffer
-     consult-recent-file find-file
-     :preview-key (kbd "C-a")))
+    (define-key lsp-mode-map [remap xref-find-apropos] #'consult-lsp-symbols))
 #+end_src
+
+#+name: completion
+ #+begin_src emacs-lisp
+  (use-package embark
+    :ensure t
+    :straight t
+    :bind
+    (("C-." . embark-act)         ;; pick some comfortable binding
+     ("C-;" . embark-dwim)        ;; good alternative: M-.
+     ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+    :init
+
+    ;; Optionally replace the key help with a completing-read interface
+    (setq prefix-help-command #'embark-prefix-help-command)
+
+    :config
+
+    ;; Hide the mode line of the Embark live/completions buffers
+    (add-to-list 'display-buffer-alist
+                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                   nil
+                   (window-parameters (mode-line-format . none)))))
+
+  ;; Consult users will also want the embark-consult package.
+  (use-package embark-consult
+    :ensure t ; only need to install it, embark loads it after consult if found
+    :straight t
+    :hook
+    (embark-collect-mode . consult-preview-at-point-mode))
+ #+end_src
 
 * Project Management
 
@@ -336,7 +375,7 @@ Using it with orderless
       "pd" 'projectile-find-dir
       "pD" 'projectile-dired
       "pe" 'projectile-edit-dir-locals
-      "pf" 'projectile-find-file
+      "pf" 'projectile-find-file-other-window
       "pF" 'projectile-find-file-dwim
       "pE" 'projectile-find-references
       "pg" 'projectile-find-tag
@@ -400,8 +439,6 @@ Trying to use Edwina as a tiling manager
 #+begin_src emacs-lisp
   (use-package edwina
     :straight t
-    :init
-    (setq display-buffer-base-action '(display-buffer-below-selected))
     :general
     (ep/general-leader-def
       "w" '(:ignore t :which-key "wm")
@@ -449,12 +486,22 @@ We're going to have cool looking delimiters in all the modes.
 
 #+name: prog-mode
 #+begin_src emacs-lisp
-  (use-package eglot
+  (defun ep/lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless)))
+
+  (use-package lsp-mode
     :straight t
-    :defer t
+    :custom
+    (lsp-completion-provider :none)
+    :hook
+    (lsp-completion-mode . ep/lsp-mode-setup-completion)
     :config
-    (add-to-list 'eglot-server-programs
-                 '(ruby-mode . ("bundle" "exec" "ruby-lsp"))))
+    (setq lsp-enable-folding nil
+          lsp-enable-text-document-color nil
+          lsp-enable-on-type-formatting nil
+          lsp-headerline-breadcrumb-enable nil
+          lsp-keymap-prefix nil))
 #+end_src
 
 ** Org-Mode
@@ -490,7 +537,7 @@ Let's define all the lisp modes we want to use so other modes can hook into them
 #+Name: lisp-settings
 #+begin_src emacs-lisp
   (defconst ed/lisp-mode-hook-list
-    '(emacs-lisp-mode-hook lisp-mode-hook))
+    '(emacs-lisp-mode-hook racket-mode lisp-mode-hook))
 
   (defconst ed/lisp-mode-map-list
     '(emacs-lisp-mode-map))
@@ -513,12 +560,11 @@ Eval sexps
     :straight t
     :general
     (ep/general-local-leader-def
-      :keymaps 'rustic-mode
+      :keymaps 'rustic-mode-map
       "c" '(:ignore t :which-key "cargo")
       "ct" 'rustic-cargo-run-test
       "ca" 'rustic-cargo-add
-      "cA" 'rustic-cargo-auto-add-missing-dependencies)
-    :config (setq rustic-lsp-client 'eglot))
+      "cA" 'rustic-cargo-auto-add-missing-dependencies))
 #+end_src
 
 ** Golang
@@ -526,8 +572,7 @@ Eval sexps
 #+name: golang
 #+begin_src emacs-lisp
   (use-package go-mode
-    :straight t
-    :hook (go-mode . eglot-ensure))
+    :straight t)
 #+end_src
 
 ** Ruby
@@ -536,20 +581,22 @@ Eval sexps
 #+begin_src emacs-lisp
   (use-package ruby-mode
     :straight t
-    :hook (ruby-mode . eglot-ensure))
+    :hook (ruby-mode . lsp-mode))
 #+end_src
 
 #+name: ruby
 #+begin_src emacs-lisp
   (use-package rspec-mode
     :straight t
+    :init
+    (setq rspec-use-rvm t)
     :general
     (ep/general-local-leader-def
-      :keymaps 'rspec-verifiable-mode
+      :keymaps 'rspec-verifiable-mode-map
       "t" '(:ignore t :which-key "test")
       "tt" 'rspec-toggle-spec-and-target)
     (ep/general-local-leader-def
-      :keymaps 'rspec-mode
+      :keymaps 'rspec-mode-map
       "t" '(:ignore t :which-key "test")
       "ts" 'rspec-verify-single
       "td" 'rspec-toggle-example-pendingness))
@@ -562,10 +609,10 @@ Eval sexps
     :hook ruby-mode
     :general
     (ep/general-local-leader-def
-      :keymaps 'rubocop-mode
-      "c" '(:ignore true :which-key "rubocop")
-      "cp" 'rubocop-check-project
-      "cF" 'rubocop-autocorrect-current-file))
+      :keymaps 'rubocop-mode-map
+      "l" '(:ignore t :which-key "rubocop")
+      "lp" 'rubocop-check-project
+      "lF" 'rubocop-autocorrect-current-file))
 #+end_src
 
 #+name: ruby
@@ -575,3 +622,28 @@ Eval sexps
     :config
     (add-hook 'ruby-mode-hook (lambda () (rvm-activate-corresponding-ruby))))
 #+end_src
+
+** Racket
+
+#+name: racket
+#+begin_src emacs-lisp
+  (use-package racket-mode
+    :straight t
+    :general
+    (ep/general-local-leader-def
+      :key-map 'racket-mode
+      "xr" 'racket-run
+      "xR" 'racket-repl
+      "xv" 'racket-send-region
+      "xe" 'racket-eval-last-sexp))
+#+end_src
+
+** Idris
+
+#+name: idris
+#+begin_src emacs-lisp
+  (use-package idris2-mode
+    :straight `(idris2-mode :type git :repo "git@github.com:redfish64/idris2-mode"))
+
+#+end_src
+
