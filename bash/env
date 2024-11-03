@@ -9,9 +9,6 @@ PATH="$HOME/bin:$PATH"
 # Add Cask to path
 PATH="$HOME/.cask/bin:$PATH"
 
-# Add Home Directory npm packges
-PATH="$HOME/.npm-packages/bin/:$PATH"
-
 # Added by the Heroku Toolbelt
 PATH="/usr/local/heroku/bin:$PATH"
 
@@ -21,32 +18,25 @@ PATH="./node_modules/.bin:$PATH"
 # Set Path for user pi installed
 PATH="$HOME/.local/bin:$PATH"
 
-# Set Config for NVM
-export NVM_DIR="$HOME/.nvm"
-
-# Set Path for Pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-PATH="$PYENV_ROOT/bin:$PATH"
-
-# Set PATH for Postgresql
-PATH="/usr/local/opt/postgresql@11/bin:$PATH"
-
-# Set PATH for avr-gcc and armg gcc
-PATH="/usr/local/opt/arm-gcc-bin@8/bin:/usr/local/opt/avr-gcc@8/bin:$PATH"
-
 # Set PATH for doom eamcs
-PATH="$HOME/.emacs.d/bin:$PATH"
+PATH="$HOME/.config/emacs/bin:$PATH"
 
 # Path for HOMEBREW
 export PATH="/usr/local/sbin:$PATH" 
+
+# Path for LLVM
+export PATH="/usr/local/opt/llvm/bin:$PATH"
+
+# Path for Cargo
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# Path for Docker
+export PATH="$HOME/.docker/cli-plugins/:$PATH"
 
 export PATH
 
 ### Locale
 export LANG=en_US.UTF-8
 
-### Go Stuff
-export GOPATH=$HOME/.go
-test -d "${GOPATH}" || mkdir "${GOPATH}"
-export GOROOT="$(brew --prefix golang)/libexec"
-export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"
+# vcpkg
+export VCPKG_ROOT="$HOME/vcpkg"
