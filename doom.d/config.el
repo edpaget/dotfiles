@@ -27,7 +27,7 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-solarized-dark)
 
-(setq doom-font (font-spec :family "Hack" :size 14))
+(setq doom-font (font-spec :family "Iosevka" :size 15))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!

@@ -11,20 +11,10 @@ desc "Link dotfiles into user's home directory"
 task :link do
   replace_all = false
 
-  special_locations = {
-    "bin" => File.join(ENV['HOME'], "bin"),
-    "fish" => File.join(ENV['HOME'], ".config", "fish"),
-  }
-
   Dir['*'].each do |file|
     next if %w[Rakefile README.md].include? file
 
-    # Some files should be linked to special destinations
-    dest = if special_locations.has_key?(file)
-             special_locations[file]
-           else
-             File.join(ENV['HOME'], ".#{file}")
-           end
+    dest = File.join(ENV['HOME'], ".#{file}")
 
     if dest.nil?
       puts "Not linking #{file}"
