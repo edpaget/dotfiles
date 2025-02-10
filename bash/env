@@ -9,9 +9,6 @@ PATH="$HOME/bin:$PATH"
 # Add Cask to path
 PATH="$HOME/.cask/bin:$PATH"
 
-# Added by the Heroku Toolbelt
-PATH="/usr/local/heroku/bin:$PATH"
-
 # Set Node Modules Path
 PATH="./node_modules/.bin:$PATH"
 
@@ -21,17 +18,14 @@ PATH="$HOME/.local/bin:$PATH"
 # Set PATH for doom eamcs
 PATH="$HOME/.config/emacs/bin:$PATH"
 
-# Path for HOMEBREW
-export PATH="/usr/local/sbin:$PATH" 
-
-# Path for LLVM
-export PATH="/usr/local/opt/llvm/bin:$PATH"
-
 # Path for Cargo
 export PATH="$HOME/.cargo/bin:$PATH"
 
 # Path for Docker
 export PATH="$HOME/.docker/cli-plugins/:$PATH"
+
+# PATH for Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 export PATH
 

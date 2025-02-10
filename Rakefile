@@ -12,7 +12,7 @@ task :link do
   replace_all = false
 
   Dir['*'].each do |file|
-    next if %w[Rakefile README.md].include? file
+    next if %w[Rakefile README.md Brewfile].include? file
 
     dest = File.join(ENV['HOME'], ".#{file}")
 
