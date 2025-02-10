@@ -21,4 +21,4 @@ if ! shopt -oq posix; then
   fi
 fi
 
-[ -f /opt/homebrew/opt/asdf/libexec/asdf.sh ] && source /opt/homebrew/opt/asdf/libexec/asdf.sh
+. <(asdf completion bash)
