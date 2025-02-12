@@ -13,4 +13,7 @@ fi
 if [ -e "$HOME/.bash/aliases" ] ; then
   source "$HOME/.bash/aliases"
 fi
-. "$HOME/.cargo/env"
+
+if [ -e "$HOME/.bash/env" ] ; then
+   source "$HOME/.cargo/env"
+fi
