@@ -55,7 +55,26 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-(use-package edwina
+(use-package! edwina
   :config
   (setq display-buffer-base-action '(display-buffer-below-selected))
   (edwina-mode 1))
+
+(map! :after edwina
+      :map edwina-mode-map
+      :leader (:prefix ("e" . "edwina")
+               :n "z" #'edwina-zoom
+               :n "c" #'edwina-clone-window
+               :n "k" #'edwina-delete-window
+               :n "r" #'edwina-arrange
+               :n "n" #'edwina-swap-next-window
+               :n "p" #'edwina-swap-previous-window
+               :n "N" #'edwina-select-next-window
+               :n "P" #'edwina-select-previous-window
+               :n "i" #'edwina-inc-mfact
+               :n "d" #'edwina-dec-mfact))
+
+
+(use-package! evil-cleverparens
+  :hook (emacs-lisp-mode . evil-cleverparens-mode)
+  :hook (clojure-mode . evil-cleverparens-mode))

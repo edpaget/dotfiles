@@ -2,3 +2,4 @@
 ;;; $DOOMDIR/packages.el
 
 (package! edwina)
+(package! evil-cleverparens)
