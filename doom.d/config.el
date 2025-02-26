@@ -78,3 +78,5 @@
 (use-package! evil-cleverparens
   :hook (emacs-lisp-mode . evil-cleverparens-mode)
   :hook (clojure-mode . evil-cleverparens-mode))
+
+(setq cider-print-fn "fipp")
