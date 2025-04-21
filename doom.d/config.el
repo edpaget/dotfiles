@@ -3,7 +3,6 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Edward Paget"
@@ -92,7 +91,8 @@
   ; See the Configuration section below
   (aidermacs-default-model "gemini"))
 
-(map! :leader
+(map! :after aidermacs
+      :leader
       (:prefix ("c" . "code")
         :desc "Start Aidermacs" "A" #'aidermacs-transient-menu))
 
@@ -102,3 +102,14 @@
                        (:prefix ("f" . "lsp find")
                         :n "d" #'lsp-find-definition
                         :n "r" #'lsp-find-references)))
+
+(map! :after aidermacs
+      :map aidermacs-comint-mode
+      :leader (:prefix ("j" . "aidermacs")
+               :n "a" #'aidermacs-switch-to-architect-mode
+               :n "A" #'aidermacs-switch-to-ask-mode
+               :n "c" #'aidermacs-switch-to-code-mode
+               :n "C" #'aidermacs-clear-chat-history
+               :n "fa" #'aidermacs-add-file
+               :n "fd" #'aidermacs-drop-file
+               :n "q" #'aidermacs-exit))
