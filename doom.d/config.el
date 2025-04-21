@@ -71,6 +71,7 @@
                :n "p" #'edwina-swap-previous-window
                :n "N" #'edwina-select-next-window
                :n "P" #'edwina-select-previous-window
+               :n "m" #'edwina-zoom
                :n "i" #'edwina-inc-mfact
                :n "d" #'edwina-dec-mfact))
 
@@ -94,3 +95,10 @@
 (map! :leader
       (:prefix ("c" . "code")
         :desc "Start Aidermacs" "A" #'aidermacs-transient-menu))
+
+(map! :after lsp-mode
+      :map lsp-mode-map
+      :leader (:prefix ("l" . "lsp")
+                       (:prefix ("f" . "lsp find")
+                        :n "d" #'lsp-find-definition
+                        :n "r" #'lsp-find-references)))
