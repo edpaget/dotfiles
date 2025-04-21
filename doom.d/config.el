@@ -80,3 +80,18 @@
   :hook (clojure-mode . evil-cleverparens-mode))
 
 (setq cider-print-fn "fipp")
+
+(use-package aidermacs
+  :init
+  ;; Must be set early to prevent ~/.config/emacs/transient from being created
+  (setq transient-levels-file  (concat doom-data-dir "transient/levels")
+        transient-values-file  (concat doom-data-dir "transient/values")
+        transient-history-file (concat doom-data-dir "transient/history"))
+  :custom
+  ; See the Configuration section below
+  (aidermacs-use-architect-mode t)
+  (aidermacs-default-model "sonnet"))
+
+(map! :leader
+      (:prefix ("c" . "code")
+        :desc "Start Aidermacs" "A" #'aidermacs-transient-menu))

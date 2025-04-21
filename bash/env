@@ -38,3 +38,5 @@ export LANG=en_US.UTF-8
 
 # vcpkg
 export VCPKG_ROOT="$HOME/vcpkg"
+
+hash direnv 2>/dev/null && eval "$(direnv hook bash)"
