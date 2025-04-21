@@ -81,7 +81,7 @@
 
 (setq cider-print-fn "fipp")
 
-(use-package aidermacs
+(use-package! aidermacs
   :init
   ;; Must be set early to prevent ~/.config/emacs/transient from being created
   (setq transient-levels-file  (concat doom-data-dir "transient/levels")
@@ -89,27 +89,43 @@
         transient-history-file (concat doom-data-dir "transient/history"))
   :custom
   ; See the Configuration section below
-  (aidermacs-default-model "gemini"))
+  (aidermacs-default-model "gemini/gemini-2.5-pro-exp-03-25"))
 
 (map! :after aidermacs
       :leader
-      (:prefix ("c" . "code")
-        :desc "Start Aidermacs" "A" #'aidermacs-transient-menu))
+      (:prefix ("l" . "llm")
+       :desc "Start Aidermacs" :n "\"" #'aidermacs-transient-menu
+       (:prefix ("a" . "aidermacs")
+        :desc "switch to aidermacs" :n "b" #'aidermacs-switch-to-buffer)))
+
+(use-package! gptel
+  :config
+  (setq
+     gptel-model 'gemini-2.5-pro-exp-03-25
+     gptel-backend (gptel-make-gemini "Gemini" :key (getenv "GEMINI_API_KEY") :stream t))
+  )
+
+(map! :after gptel
+      :leader
+      (:prefix ("l" . "llm")
+       :desc "Start gptel" :n "'" #'gptel)
+      )
 
 (map! :after lsp-mode
       :map lsp-mode-map
-      :leader (:prefix ("l" . "lsp")
+      :leader (:prefix ("j" . "lsp")
                        (:prefix ("f" . "lsp find")
                         :n "d" #'lsp-find-definition
                         :n "r" #'lsp-find-references)))
 
 (map! :after aidermacs
       :map aidermacs-comint-mode
-      :leader (:prefix ("j" . "aidermacs")
-               :n "a" #'aidermacs-switch-to-architect-mode
-               :n "A" #'aidermacs-switch-to-ask-mode
-               :n "c" #'aidermacs-switch-to-code-mode
-               :n "C" #'aidermacs-clear-chat-history
-               :n "fa" #'aidermacs-add-file
-               :n "fd" #'aidermacs-drop-file
-               :n "q" #'aidermacs-exit))
+      :leader (:prefix ( "l" . "llm")
+               (:prefix ("a" . "aidermacs")
+                :n "a" #'aidermacs-switch-to-architect-mode
+                :n "A" #'aidermacs-switch-to-ask-mode
+                :n "c" #'aidermacs-switch-to-code-mode
+                :n "C" #'aidermacs-clear-chat-history
+                :n "fa" #'aidermacs-add-file
+                :n "fd" #'aidermacs-drop-file
+                :n "q" #'aidermacs-exit)))
