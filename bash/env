@@ -26,6 +26,7 @@ export PATH="$HOME/.docker/cli-plugins/:$PATH"
 
 # PATH for Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
+export PKG_CONFIG_PATH="/opt/homebrew/opt/openblas/lib/pkgconfig"
 
 # PATH FOR asdf
 

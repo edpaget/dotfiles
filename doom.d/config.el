@@ -89,8 +89,7 @@
         transient-history-file (concat doom-data-dir "transient/history"))
   :custom
   ; See the Configuration section below
-  (aidermacs-use-architect-mode t)
-  (aidermacs-default-model "sonnet"))
+  (aidermacs-default-model "gemini"))
 
 (map! :leader
       (:prefix ("c" . "code")

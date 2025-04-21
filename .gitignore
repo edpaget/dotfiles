@@ -4,3 +4,4 @@ config/emacs
 config/ghc
 config/StardewValley
 /config/containers/
+.aider*
