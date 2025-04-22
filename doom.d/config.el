@@ -94,7 +94,7 @@
 (map! :after aidermacs
       :leader
       (:prefix ("l" . "llm")
-       :desc "Start Aidermacs" :n "\"" #'aidermacs-transient-menu
+       :desc "Start Aidermacs" :n "'" #'aidermacs-transient-menu
        (:prefix ("a" . "aidermacs")
         :desc "switch to aidermacs" :n "b" #'aidermacs-switch-to-buffer)))
 
@@ -108,7 +108,7 @@
 (map! :after gptel
       :leader
       (:prefix ("l" . "llm")
-       :desc "Start gptel" :n "'" #'gptel)
+       :desc "Start gptel" :n "\"" #'gptel)
       )
 
 (map! :after lsp-mode
@@ -126,6 +126,8 @@
                 :n "A" #'aidermacs-switch-to-ask-mode
                 :n "c" #'aidermacs-switch-to-code-mode
                 :n "C" #'aidermacs-clear-chat-history
-                :n "fa" #'aidermacs-add-file
-                :n "fd" #'aidermacs-drop-file
-                :n "q" #'aidermacs-exit)))
+                :n "q" #'aidermacs-exit
+                :n "f a" #'aidermacs-add-file
+                :n "f d" #'aidermacs-drop-file
+                :n "e r" #'aidermacs-send-line-or-region
+                )))
