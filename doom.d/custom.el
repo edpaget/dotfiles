@@ -29,7 +29,8 @@
      (eval put 'define-premium-feature 'clojure-doc-string-elt 2)
      (ftf-project-finders ftf-get-top-git-dir) (whitespace-line-column . 118)
      (cider-clojure-cli-parameters . "-A:dev")
-     (cider-clojure-cli-global-options . "-A:dev"))))
+     (cider-clojure-cli-parameters . "-A:dev")
+     (cider-clojure-cli-aliases . ":dev:test"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

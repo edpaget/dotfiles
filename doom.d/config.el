@@ -53,6 +53,10 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+;;
+;; Make sure we read from dir-locals
+
+(setq-default enable-local-variables t)
 
 (use-package! edwina
   :config
@@ -89,12 +93,13 @@
         transient-history-file (concat doom-data-dir "transient/history"))
   :custom
   ; See the Configuration section below
+  (aidermacs-backend 'vterm)
   (aidermacs-default-model "gemini/gemini-2.5-pro-exp-03-25"))
 
 (map! :after aidermacs
       :leader
       (:prefix ("l" . "llm")
-       :desc "Start Aidermacs" :n "'" #'aidermacs-transient-menu
+       :desc "Start Aidermacs" :n "'" #'aidermacs-run
        (:prefix ("a" . "aidermacs")
         :desc "switch to aidermacs" :n "b" #'aidermacs-switch-to-buffer)))
 
@@ -119,15 +124,20 @@
                         :n "r" #'lsp-find-references)))
 
 (map! :after aidermacs
-      :map aidermacs-comint-mode
       :leader (:prefix ( "l" . "llm")
                (:prefix ("a" . "aidermacs")
-                :n "a" #'aidermacs-switch-to-architect-mode
-                :n "A" #'aidermacs-switch-to-ask-mode
-                :n "c" #'aidermacs-switch-to-code-mode
-                :n "C" #'aidermacs-clear-chat-history
+                :n "a" #'aidermacs-architect-this-code
+                :n "c" #'aidermacs-direct-change
+                :n "i" #'aidermacs-implement-todo
                 :n "q" #'aidermacs-exit
+                :n "t" #'aidermacs-write-unit-test
+                :n "s a" #'aidermacs-switch-to-architect-mode
+                :n "s A" #'aidermacs-switch-to-ask-mode
+                :n "s c" #'aidermacs-switch-to-code-mode
+                :n "s C" #'aidermacs-clear-chat-history
+                :n "f A" #'aidermacs-add-current-file
                 :n "f a" #'aidermacs-add-file
                 :n "f d" #'aidermacs-drop-file
+                :n "f D" #'aidermacs-drop-current-file
                 :n "e r" #'aidermacs-send-line-or-region
                 )))
