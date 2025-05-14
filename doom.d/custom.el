@@ -7,7 +7,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(safe-local-variable-values
-   '((eval define-clojure-indent (l/matcha '(1 (:defn))) (l/matche '(1 (:defn)))
+   '((js2-mode-show-strict-warnings) (js2-mode-show-parse-errors)
+     (eval define-clojure-indent (l/matcha '(1 (:defn))) (l/matche '(1 (:defn)))
       (p.types/def-abstract-type '(1 (:defn)))
       (p.types/defprotocol+ '(1 (:defn)))
       (p.types/defrecord+ '(2 nil nil (:defn)))
