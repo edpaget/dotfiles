@@ -56,12 +56,30 @@
 ;;
 ;; Make sure we read from dir-locals
 
-(setq-default enable-local-variables t)
+(setq enable-local-variables t)
+(setq enable-local-eval t)
+(setq hack-local-variables t)
 
 (use-package! edwina
   :config
   (setq display-buffer-base-action '(display-buffer-below-selected))
   (edwina-mode 1))
+
+(defun ed/edwina-find-file-main-push-down ()
+  "Clone the active window, then find a file in the original active window.
+Assumes the active window is the main edwina window.
+The effect is that the new file opens in the main window,
+and the previous buffer from the main window is \='pushed down\='
+into the newly cloned window."
+  (interactive)
+  (let ((original-window (selected-window)))
+    (select-window original-window)
+    (edwina-clone-window)
+    (call-interactively #'find-file)
+    (if (eq (selected-window) (frame-first-window))
+        (edwina-arrange)
+      (edwina-zoom))
+    (select-window (frame-first-window))))
 
 (map! :after edwina
       :map edwina-mode-map
@@ -76,7 +94,8 @@
                :n "P" #'edwina-select-previous-window
                :n "m" #'edwina-zoom
                :n "i" #'edwina-inc-mfact
-               :n "d" #'edwina-dec-mfact))
+               :n "d" #'edwina-dec-mfact
+               :n "f" #'ed/edwina-find-file-main-push-down))
 
 
 (use-package! evil-cleverparens
@@ -94,7 +113,7 @@
   :custom
   ; See the Configuration section below
   (aidermacs-backend 'vterm)
-  (aidermacs-default-model "gemini/gemini-2.5-pro-exp-03-25"))
+  (aidermacs-default-model "gemini/gemini-2.5-pro-preview-05-06"))
 
 (map! :after aidermacs
       :leader
@@ -106,8 +125,8 @@
 (use-package! gptel
   :config
   (setq
-     gptel-model 'gemini-2.5-pro-exp-03-25
-     gptel-backend (gptel-make-gemini "Gemini" :key (getenv "GEMINI_API_KEY") :stream t))
+   gptel-model 'gemini-2.5-pro-exp-03-25
+   gptel-backend (gptel-make-gemini "Gemini" :key (getenv "GEMINI_API_KEY") :stream t))
   )
 
 (map! :after gptel
@@ -125,19 +144,19 @@
 
 (map! :after aidermacs
       :leader (:prefix ( "l" . "llm")
-               (:prefix ("a" . "aidermacs")
-                :n "a" #'aidermacs-architect-this-code
-                :n "c" #'aidermacs-direct-change
-                :n "i" #'aidermacs-implement-todo
-                :n "q" #'aidermacs-exit
-                :n "t" #'aidermacs-write-unit-test
-                :n "s a" #'aidermacs-switch-to-architect-mode
-                :n "s A" #'aidermacs-switch-to-ask-mode
-                :n "s c" #'aidermacs-switch-to-code-mode
-                :n "s C" #'aidermacs-clear-chat-history
-                :n "f A" #'aidermacs-add-current-file
-                :n "f a" #'aidermacs-add-file
-                :n "f d" #'aidermacs-drop-file
-                :n "f D" #'aidermacs-drop-current-file
-                :n "e r" #'aidermacs-send-line-or-region
-                )))
+                       (:prefix ("a" . "aidermacs")
+                        :n "a" #'aidermacs-architect-this-code
+                        :n "c" #'aidermacs-direct-change
+                        :n "i" #'aidermacs-implement-todo
+                        :n "q" (lambda () (interactive) (aidermacs-exit) (kill-buffer (current-buffer)))
+                        :n "t" #'aidermacs-write-unit-test
+                        :n "s a" #'aidermacs-switch-to-architect-mode
+                        :n "s A" #'aidermacs-switch-to-ask-mode
+                        :n "s c" #'aidermacs-switch-to-code-mode
+                        :n "s C" #'aidermacs-clear-chat-history
+                        :n "f A" #'aidermacs-add-current-file
+                        :n "f a" #'aidermacs-add-file
+                        :n "f d" #'aidermacs-drop-file
+                        :n "f D" #'aidermacs-drop-current-file
+                        :n "e r" #'aidermacs-send-line-or-region
+                        )))
