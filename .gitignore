@@ -5,3 +5,6 @@ config/ghc
 config/StardewValley
 /config/containers/
 .aider*
+/clojure/tools/
+/clojure/.cpcache/
+/.lsp/
