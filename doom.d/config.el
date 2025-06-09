@@ -193,10 +193,11 @@ Assume you are assisting a developer working in an advanced Emacs environment, p
       :leader
       (:prefix ("l" . "llm")
        :desc "Start gptel" :n "\"" #'gptel
-       :desc "gtpel menu" :n "m" #'gptel-menu
-       :desc "gtpel menu" :n "c" #'gptel-mcp-connect
-       :desc "gtpel menu" :n "q" #'gptel-mcp-disconnect
-       :desc "gtpel menu" :n "s" #'gptel-send)
+       (:prefix ("g" . "gtpel")
+        :desc "gtpel menu" :n "m" #'gptel-menu
+        :desc "gtpel mcp connect" :n "c" #'gptel-mcp-connect
+        :desc "gtpel mcp disconnct" :n "q" #'gptel-mcp-disconnect
+        :desc "gtpel send" :n "s" #'gptel-send))
       )
 
 (map! :after lsp-mode
