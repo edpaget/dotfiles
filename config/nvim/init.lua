@@ -15,7 +15,7 @@ vim.g.maplocalleader = ","
 
 -- Basic options
 vim.opt.number = true
-vim.opt.relativenumber = true
+vim.opt.relativenumber = false
 vim.opt.signcolumn = "yes"
 vim.opt.clipboard = "unnamedplus"
 vim.opt.undofile = true
@@ -33,11 +33,14 @@ vim.opt.updatetime = 250
 require("lazy").setup({
   -- Colorscheme
   {
-    "catppuccin/nvim",
-    name = "catppuccin",
+    "maxmx03/solarized.nvim",
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme("catppuccin")
+      require("solarized").setup({
+        variant = "autumn",
+      })
+      vim.o.background = "dark"
+      vim.cmd.colorscheme("solarized")
     end,
   },
 
@@ -155,7 +158,7 @@ require("lazy").setup({
     "nvim-lualine/lualine.nvim",
     config = function()
       require("lualine").setup({
-        options = { theme = "catppuccin" },
+        options = { theme = "solarized" },
       })
     end,
   },
