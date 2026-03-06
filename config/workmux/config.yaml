@@ -1,0 +1,15 @@
+agent: claude
+merge_strategy: merge
+nerdfont: false
+theme: dark
+mode: window
+
+panes:
+  - command: <agent>
+    focus: true
+  - split: horizontal
+
+status_icons:
+  working: "[*]"
+  waiting: "[?]"
+  done: "[ok]"

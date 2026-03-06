@@ -23,3 +23,9 @@ _bb_tasks() {
 }
 # autocomplete filenames as well
 complete -f -F _bb_tasks mage
+. "$HOME/.cargo/env"
+
+# workmux completions
+if command -v workmux &> /dev/null; then
+  eval "$(workmux completions bash)"
+fi

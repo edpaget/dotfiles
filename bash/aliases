@@ -6,7 +6,8 @@ alias l='lein'
 alias lr='lein repl'
 alias senv='source .env'
 alias r='rails'
-alias tmux='TERM=screen-256color-bce tmux -2'
+alias tmux='tmux -2'
+alias wm='workmux'
 alias dockerip="docker inspect --format '{{ .NetworkSettings.IPAddress}}'"
 alias gp='git push'
 alias grep='grep --color=auto'
@@ -17,6 +18,7 @@ alias es='emacsclient -c -a ""'
 alias gco='git clone git@github.com:'
 alias dkc='docker-compose'
 alias s!!='sudo !!'
+alias gsnows='git diff -U0 -w --no-color | git apply --cached --ignore-whitespace --unidiff-zero -'
 
 if [ `uname` == "Linux" ]; then
    alias la='ls -al --color=auto'
