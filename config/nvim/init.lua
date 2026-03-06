@@ -157,6 +157,25 @@ require("lazy").setup({
       require("gitsigns").setup()
     end,
   },
+
+  -- Git status interface
+  {
+    "NeogitOrg/neogit",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {},
+    keys = {
+      { "<leader>gs", function() require("neogit").open() end, desc = "Git status" },
+    },
+  },
+})
+
+-- Auto-open neogit in workmux sessions
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    if vim.g.workmux then
+      require("neogit").open()
+    end
+  end,
 })
 
 -- LSP server configs (Neovim 0.11+ native API)

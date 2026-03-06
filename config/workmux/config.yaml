@@ -8,7 +8,7 @@ panes:
   - command: <agent>
     focus: true
   - split: horizontal
-    command: nvim
+    command: nvim --cmd "let g:workmux=1"
   - split: vertical
 
 status_icons:
