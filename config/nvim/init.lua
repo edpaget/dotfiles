@@ -118,10 +118,20 @@ require("lazy").setup({
     "nvim-telescope/telescope.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     keys = {
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-      { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
-      { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help" },
+      -- SPC f — files
+      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find file" },
+      { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
+      { "<leader>fs", "<cmd>w<cr>", desc = "Save file" },
+      -- SPC b — buffers
+      { "<leader>bb", "<cmd>Telescope buffers<cr>", desc = "Switch buffer" },
+      { "<leader>bd", "<cmd>bdelete<cr>", desc = "Kill buffer" },
+      -- SPC s — search
+      { "<leader>sp", "<cmd>Telescope live_grep<cr>", desc = "Search project" },
+      { "<leader>ss", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Search buffer" },
+      { "<leader>/", "<cmd>Telescope live_grep<cr>", desc = "Search project" },
+      -- SPC h — help
+      { "<leader>hh", "<cmd>Telescope help_tags<cr>", desc = "Help tags" },
+      { "<leader>hk", "<cmd>Telescope keymaps<cr>", desc = "Keymaps" },
     },
   },
 
@@ -164,7 +174,7 @@ require("lazy").setup({
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {},
     keys = {
-      { "<leader>gs", function() require("neogit").open() end, desc = "Git status" },
+      { "<leader>gg", function() require("neogit").open() end, desc = "Git status" },
     },
   },
 })
@@ -191,11 +201,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local map = function(keys, func, desc)
       vim.keymap.set("n", keys, func, { buffer = args.buf, desc = desc })
     end
+    -- SPC c — code (DOOM style)
     map("gd", vim.lsp.buf.definition, "Go to definition")
     map("gr", vim.lsp.buf.references, "Go to references")
     map("K", vim.lsp.buf.hover, "Hover")
     map("<leader>ca", vim.lsp.buf.code_action, "Code action")
-    map("<leader>rn", vim.lsp.buf.rename, "Rename")
-    map("<leader>d", vim.diagnostic.open_float, "Diagnostics")
+    map("<leader>cr", vim.lsp.buf.rename, "Rename")
+    map("<leader>cd", vim.diagnostic.open_float, "Line diagnostics")
+    map("<leader>cD", "<cmd>Telescope diagnostics<cr>", "Project diagnostics")
   end,
 })
