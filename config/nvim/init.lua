@@ -1,6 +1,6 @@
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git", "clone", "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
@@ -45,28 +45,28 @@ require("lazy").setup({
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = {
-          "clojure", "java", "rust", "typescript", "tsx",
-          "javascript", "python", "lua", "vim", "vimdoc",
-          "json", "yaml", "toml", "bash",
-        },
-        highlight = { enable = true },
-        indent = { enable = true },
-      })
-    end,
+    opts = {
+      ensure_installed = {
+        "clojure", "java", "rust", "typescript", "tsx",
+        "javascript", "python", "lua", "vim", "vimdoc",
+        "json", "yaml", "toml", "bash",
+      },
+      highlight = { enable = true },
+      indent = { enable = true },
+    },
   },
 
   -- LSP
   {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "williamboman/mason-lspconfig.nvim",
-    },
+    "williamboman/mason.nvim",
     config = function()
       require("mason").setup()
+    end,
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = { "williamboman/mason.nvim" },
+    config = function()
       require("mason-lspconfig").setup({
         ensure_installed = {
           "rust_analyzer",
@@ -77,26 +77,6 @@ require("lazy").setup({
           "lua_ls",
         },
       })
-
-      local lspconfig = require("lspconfig")
-      local on_attach = function(_, bufnr)
-        local map = function(keys, func, desc)
-          vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
-        end
-        map("gd", vim.lsp.buf.definition, "Go to definition")
-        map("gr", vim.lsp.buf.references, "Go to references")
-        map("K", vim.lsp.buf.hover, "Hover")
-        map("<leader>ca", vim.lsp.buf.code_action, "Code action")
-        map("<leader>rn", vim.lsp.buf.rename, "Rename")
-        map("<leader>d", vim.diagnostic.open_float, "Diagnostics")
-      end
-
-      local servers = {
-        "rust_analyzer", "ts_ls", "pyright", "jdtls", "clojure_lsp", "lua_ls",
-      }
-      for _, server in ipairs(servers) do
-        lspconfig[server].setup({ on_attach = on_attach })
-      end
     end,
   },
 
@@ -177,4 +157,26 @@ require("lazy").setup({
       require("gitsigns").setup()
     end,
   },
+})
+
+-- LSP server configs (Neovim 0.11+ native API)
+local servers = { "rust_analyzer", "ts_ls", "pyright", "jdtls", "clojure_lsp", "lua_ls" }
+for _, server in ipairs(servers) do
+  vim.lsp.config(server, {})
+end
+vim.lsp.enable(servers)
+
+-- LSP keymaps
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local map = function(keys, func, desc)
+      vim.keymap.set("n", keys, func, { buffer = args.buf, desc = desc })
+    end
+    map("gd", vim.lsp.buf.definition, "Go to definition")
+    map("gr", vim.lsp.buf.references, "Go to references")
+    map("K", vim.lsp.buf.hover, "Hover")
+    map("<leader>ca", vim.lsp.buf.code_action, "Code action")
+    map("<leader>rn", vim.lsp.buf.rename, "Rename")
+    map("<leader>d", vim.diagnostic.open_float, "Diagnostics")
+  end,
 })
