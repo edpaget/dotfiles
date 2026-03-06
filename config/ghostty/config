@@ -1,0 +1,7 @@
+# Ghostty terminal configuration
+# Run `ghostty +show-config --default --docs` to view all available options.
+
+font-family = Iosevka
+font-size = 20
+theme = Builtin Solarized Dark
+keybind = shift+enter=text:\n
