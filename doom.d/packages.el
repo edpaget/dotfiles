@@ -4,5 +4,5 @@
 (package! edwina)
 (package! evil-cleverparens)
 (package! aidermacs)
-(package! gptel :recipe (:nonrecursive t))
-(package! mcp)
+(package! gptel :recipe (:local-repo "../Projects/gptel"))
+(package! mcp :recipe (:local-repo "../Projects/mcp.el"))

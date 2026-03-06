@@ -26,7 +26,7 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-solarized-dark)
 
-(setq doom-font (font-spec :family "Iosevka" :size 15))
+(setq doom-font (font-spec :family "Iosevka" :size 16))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -113,7 +113,7 @@ into the newly cloned window."
   :custom
   ; See the Configuration section below
   (aidermacs-backend 'vterm)
-  (aidermacs-default-model "gemini/gemini-2.5-pro-preview-05-06"))
+  (aidermacs-default-model "sonnet"))
 
 (map! :after aidermacs
       :leader
@@ -130,37 +130,8 @@ into the newly cloned window."
   (setq
    gptel-confirm-tool-calls t
    gptel-include-tool-results t
-   gptel-model 'gemini-2.5-pro-preview-05-06
-   gptel-backend (gptel-make-gemini "Gemini" :key (getenv "GEMINI_API_KEY") :stream t))
-;;   (gptel-make-tool
-;;    :name "google_search"
-;;    :function (lambda (query)
-;;                (let ((search-url (concat "https://www.google.com/search?q=" (url-encode-string query))))
-;;                  (browse-url search-url)
-;;                  (format "Opened Google search for '%s' in your default browser." query)))
-;;    :description "Performs a web search using Google and opens the results in the default web browser. This tool does not return the search results directly."
-;;    :args (list '(:name "query"
-;;                  :type string
-;;                  :description "The search query string."))
-;;    :category "web")
-;; (gptel-make-tool
-;;  :name "google_search_and_fetch_results"
-;;  :function (lambda (query)
-;;              (if (fboundp 'my-custom-get-google-search-results-as-string)
-;;                  (condition-case e
-;;                      (let ((results (my-custom-get-google-search-results-as-string query)))
-;;                        (if (stringp results)
-;;                            (if (string-empty-p results) ; Check if results string is empty
-;;                                (format "No search results found or returned by the custom fetch function for query: '%s'." query)
-;;                              results) ; Return the results if they are a non-empty string
-;;                          (format "Error: The custom search function 'my-custom-get-google-search-results-as-string' did not return a string for query '%s'. It returned: %S" query results)))
-;;                    (error (format "Error executing 'my-custom-get-google-search-results-as-string' for query '%s': %s" query (error-message-string e))))
-;;                (error "The required Emacs Lisp function 'my-custom-get-google-search-results-as-string' is not defined. This tool cannot fetch results without it.")))
-;;  :description "Performs a Google search using a custom Emacs Lisp function ('my-custom-get-google-search-results-as-string') and returns the search results as a string to the LLM. The custom function must be implemented by the user."
-;;  :args (list '(:name "query"
-;;                :type string
-;;                :description "The search query string."))
-;;  :category "web-fetch")
+   gptel-model 'claude-sonnet-4-20250514
+   gptel-backend (gptel-make-anthropic "Claude" :key (getenv "ANTHROPIC_API_KEY") :stream t))
   (gptel-make-tool
    :name "emacs_eval"
    :function (lambda (code-to-eval)
@@ -171,22 +142,19 @@ into the newly cloned window."
                  :description "A string containing the Emacs Lisp code to evaluate."))
    :category "emacs")
 (gptel-make-preset 'clojure
-  :description "Preset for Clojure/ClojureScript development using Gemini Pro. Optimized for tasks managed by clojure-mcp or similar integrations."
-  gptel-backend (gptel-make-gemini "Gemini" :key (getenv "GEMINI_API_KEY") :stream t)
-  :model 'gemini-2.5-pro-preview-05-06
+  :description "Preset for Clojure/ClojureScript development using Claude Sonnet. Optimized for tasks managed by clojure-mcp or similar integrations."
   :system "You are an expert Clojure and ClojureScript programming assistant. Your primary role is to help the user write, understand, debug, and refactor Clojure/ClojureScript code.
 Provide idiomatic solutions, adhere to best practices, and offer clear explanations.
 When asked to write or modify code, provide only the code block unless explanation is explicitly requested.
 Assume you are assisting a developer working in an advanced Emacs environment, possibly using tools like clojure-mcp which integrate LLM capabilities directly into their workflow."
-  :tools '("read_buffer"))
+  :post  (lambda () (gptel-mcp-connect '("clj-prj"))))
   )
 
 (use-package! mcp
   :after gptel
   :custom (mcp-hub-servers
-           `(("clj-prj" . (:command "/bin/bash"
-                           :args ("-c" (concat "PATH=/opt/homebrew/bin:$PATH && "
-                                               "clojure -X:mcp :port 7888"))))))
+           '(("clj-prj" . (:command "/bin/bash"
+                           :args ("-c" "PATH=/opt/homebrew/bin:$PATH && clojure -X:mcp :port 50605")))))
   :config (require 'mcp-hub))
 
 (map! :after gptel
