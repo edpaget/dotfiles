@@ -3,7 +3,11 @@
 config/emacs
 config/ghc
 config/StardewValley
+/config/configstore/
 /config/containers/
+/config/gh/
+/config/git/
+/config/jgit/
 .aider*
 /clojure/tools/
 /clojure/.cpcache/
