@@ -184,6 +184,12 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     if vim.g.workmux then
       require("neogit").open()
+      local timer = vim.uv.new_timer()
+      timer:start(1000, 1000, vim.schedule_wrap(function()
+        local neogit = require("neogit")
+        neogit.refresh()
+        vim.cmd.redraw()
+      end))
     end
   end,
 })
