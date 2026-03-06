@@ -1,5 +1,5 @@
 agent: claude
-merge_strategy: merge
+merge_strategy: rebase
 nerdfont: false
 theme: dark
 mode: window
