@@ -8,6 +8,8 @@ panes:
   - command: <agent>
     focus: true
   - split: horizontal
+    command: nvim
+  - split: horizontal
 
 status_icons:
   working: "[*]"
