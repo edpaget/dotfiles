@@ -187,16 +187,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     if vim.g.workmux then
       require("neogit").open()
-      local focused = true
-      vim.api.nvim_create_autocmd("FocusLost", { callback = function() focused = false end })
-      vim.api.nvim_create_autocmd("FocusGained", { callback = function() focused = true end })
       local timer = vim.uv.new_timer()
       timer:start(1000, 1000, vim.schedule_wrap(function()
-        if not focused then
-          local neogit = require("neogit")
-          neogit.refresh()
-          vim.cmd.redraw()
-        end
+        local neogit = require("neogit")
+        local cursor = vim.api.nvim_win_get_cursor(0)
+        neogit.refresh()
+        vim.api.nvim_win_set_cursor(0, cursor)
+        vim.cmd.redraw()
       end))
     end
   end,
