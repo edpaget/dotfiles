@@ -9,7 +9,10 @@ panes:
     focus: true
   - split: horizontal
     command: nvim
-  - split: horizontal
+  - split: vertical
+
+post_create:
+  - tmux select-layout -t "#{window_id}" main-vertical
 
 status_icons:
   working: "[*]"
