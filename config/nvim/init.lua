@@ -119,10 +119,13 @@ require("lazy").setup({
   -- Fuzzy finder
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    },
     keys = {
       -- SPC f — files
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find file" },
+      { "<leader>ff", "<cmd>Telescope find_files hidden=true<cr>", desc = "Find file" },
       { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
       { "<leader>fs", "<cmd>w<cr>", desc = "Save file" },
       -- SPC b — buffers
@@ -136,6 +139,14 @@ require("lazy").setup({
       { "<leader>hh", "<cmd>Telescope help_tags<cr>", desc = "Help tags" },
       { "<leader>hk", "<cmd>Telescope keymaps<cr>", desc = "Keymaps" },
     },
+    config = function()
+      require("telescope").setup({
+        defaults = {
+          file_ignore_patterns = { "%.git/" },
+        },
+      })
+      require("telescope").load_extension("fzf")
+    end,
   },
 
   -- Clojure REPL
