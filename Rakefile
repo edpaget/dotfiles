@@ -7,9 +7,18 @@ task :default => [:install]
 desc "Install dotfiles by creating symlinks"
 task :install => [:link, :ghostty]
 
+desc "Force install dotfiles, replacing all existing links"
+task :force => [:ghostty] do
+  link_dotfiles(force: true)
+end
+
 desc "Link dotfiles into user's home directory"
 task :link do
-  replace_all = false
+  link_dotfiles
+end
+
+def link_dotfiles(force: false)
+  replace_all = force
 
   Dir['*'].each do |file|
     next if %w[Rakefile README.md Brewfile CLAUDE.md].include? file
@@ -18,8 +27,8 @@ task :link do
 
     if dest.nil?
       puts "Not linking #{file}"
-    elsif File.exist?(dest)
-      if File.identical? file, dest
+    elsif File.exist?(dest) || File.symlink?(dest)
+      if !replace_all && File.identical?(file, dest)
         puts "Already linked #{dest}"
       elsif replace_all
         replace_file file, dest
