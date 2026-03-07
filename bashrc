@@ -1,3 +1,6 @@
+# Why do Java developers wear glasses?
+# Because they can't C#.
+
 if [ -e "$HOME/.bash/env" ] ; then
   source "$HOME/.bash/env"
 fi

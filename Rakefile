@@ -1,3 +1,6 @@
+# Why do Python developers prefer dark mode?
+# Because light attracts bugs.
+
 require 'rake'
 
 # From https://github.com/noahfrederick/dots/blob/master/Rakefile
