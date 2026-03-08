@@ -209,6 +209,45 @@ require("lazy").setup({
     opts = {},
   },
 
+  -- File tree
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
+    keys = {
+      { "<leader>ft", "<cmd>Neotree toggle<cr>", desc = "Toggle file tree" },
+      { "<leader>fe", "<cmd>Neotree focus<cr>", desc = "Focus file tree" },
+    },
+    opts = {
+      filesystem = {
+        follow_current_file = { enabled = true },
+        filtered_items = {
+          hide_dotfiles = false,
+          hide_gitignored = false,
+        },
+      },
+      default_component_configs = {
+        git_status = {
+          symbols = {
+            added = "A",
+            modified = "M",
+            deleted = "D",
+            renamed = "R",
+            untracked = "?",
+            ignored = "!",
+            unstaged = "U",
+            staged = "S",
+            conflict = "C",
+          },
+        },
+      },
+    },
+  },
+
   -- Clojure REPL
   {
     "Olical/conjure",
