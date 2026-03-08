@@ -292,19 +292,11 @@ require("lazy").setup({
   },
 })
 
--- Auto-open neogit in workmux sessions
+-- Auto-open neo-tree in workmux sessions
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     if vim.g.workmux then
-      require("neogit").open()
-      local focused = true
-      vim.api.nvim_create_autocmd("FocusGained", { callback = function() focused = true end })
-      vim.api.nvim_create_autocmd("FocusLost", { callback = function() focused = false end })
-      local timer = vim.uv.new_timer()
-      timer:start(5000, 5000, vim.schedule_wrap(function()
-        if focused then return end
-        pcall(function() require("neogit").refresh() end)
-      end))
+      vim.cmd("Neotree show")
     end
   end,
 })
