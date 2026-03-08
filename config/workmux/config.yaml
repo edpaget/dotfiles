@@ -9,7 +9,6 @@ panes:
     focus: true
   - split: horizontal
     command: nvim --cmd "let g:workmux=1"
-  - split: vertical
 
 status_icons:
   working: "[*]"
