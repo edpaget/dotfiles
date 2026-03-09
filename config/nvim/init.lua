@@ -11,7 +11,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Leader key
 vim.g.mapleader = " "
-vim.g.maplocalleader = ","
+vim.g.maplocalleader = " "
 
 -- Basic options
 vim.opt.number = true
@@ -162,6 +162,8 @@ require("lazy").setup({
         { "<leader>h", group = "help" },
         { "<leader>s", group = "search" },
         { "<leader>x", group = "diagnostics" },
+        { "<leader>e", group = "eval" },
+        { "<leader>l", group = "log" },
       },
     },
   },
