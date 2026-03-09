@@ -12,6 +12,6 @@ panes:
     command: nvim --cmd "let g:workmux=1"
 
 status_icons:
-  working: "[*]"
-  waiting: "[?]"
-  done: "[ok]"
+  working: "🤖"
+  waiting: "💬"
+  done: "✅"
