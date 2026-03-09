@@ -307,11 +307,17 @@ require("lazy").setup({
   },
 })
 
--- Auto-open neo-tree in workmux sessions
+-- Auto-open neo-tree in workmux sessions (close the empty starter buffer)
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     if vim.g.workmux then
-      vim.cmd("Neotree action=show")
+      vim.cmd("Neotree action=focus")
+      local bufs = vim.fn.getbufinfo({ buflisted = 1 })
+      for _, buf in ipairs(bufs) do
+        if buf.name == "" and buf.linecount <= 1 then
+          vim.api.nvim_buf_delete(buf.bufnr, {})
+        end
+      end
     end
   end,
 })
