@@ -218,6 +218,7 @@ require("lazy").setup({
       "nvim-tree/nvim-web-devicons",
       "MunifTanjim/nui.nvim",
     },
+    cmd = { "Neotree" },
     keys = {
       { "<leader>ft", "<cmd>Neotree toggle<cr>", desc = "Toggle file tree" },
       { "<leader>fe", "<cmd>Neotree focus<cr>", desc = "Focus file tree" },
@@ -225,6 +226,7 @@ require("lazy").setup({
     opts = {
       filesystem = {
         follow_current_file = { enabled = true },
+        use_libuv_file_watcher = true,
         filtered_items = {
           hide_dotfiles = false,
           hide_gitignored = false,
