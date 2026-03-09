@@ -296,7 +296,7 @@ require("lazy").setup({
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     if vim.g.workmux then
-      vim.cmd("Neotree show")
+      vim.cmd("Neotree action=show")
     end
   end,
 })
