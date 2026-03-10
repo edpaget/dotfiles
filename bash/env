@@ -28,8 +28,8 @@ export PATH="$HOME/.docker/cli-plugins/:$PATH"
 eval "$(/opt/homebrew/bin/brew shellenv)"
 export PKG_CONFIG_PATH="/opt/homebrew/opt/openblas/lib/pkgconfig"
 
-# PATH FOR mise
-eval "$(mise activate bash --shims)"
+# mise shims for non-interactive shells
+export PATH="$HOME/.local/share/mise/shims:$PATH"
 
 export PATH
 

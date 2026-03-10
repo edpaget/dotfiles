@@ -22,3 +22,4 @@ if ! shopt -oq posix; then
 fi
 
 . <(mise completion bash)
+eval "$(mise activate bash)"
