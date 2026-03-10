@@ -11,4 +11,8 @@ config/StardewValley
 .aider*
 /clojure/tools/
 /clojure/.cpcache/
+/clojure/.nrepl-port
+/.clj-kondo/
 /.lsp/
+/config/nvim/lazy-lock.json
+/config/tmux/plugins/
