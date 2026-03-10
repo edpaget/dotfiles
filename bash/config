@@ -21,4 +21,4 @@ if ! shopt -oq posix; then
   fi
 fi
 
-. <(asdf completion bash)
+. <(mise completion bash)
