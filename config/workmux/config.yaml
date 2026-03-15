@@ -4,6 +4,10 @@ nerdfont: false
 theme: dark
 mode: window
 
+files:
+  symlink:
+    - .claude/settings.local.json
+
 post_create:
   - mise trust
 
