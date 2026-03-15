@@ -14,8 +14,8 @@ shopt -s checkwinsize
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
-  elif [ -x "$(command -v brew)" ] && [ -f `brew --prefix`/etc/bash_completion ]; then
-    . `brew --prefix`/etc/bash_completion
+  elif [ -x "$(command -v brew)" ] && [ -f "$HOMEBREW_PREFIX/etc/bash_completion" ]; then
+    . "$HOMEBREW_PREFIX/etc/bash_completion"
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
   fi

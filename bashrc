@@ -17,16 +17,13 @@ if [ -e "$HOME/.bash/aliases" ] ; then
   source "$HOME/.bash/aliases"
 fi
 
-if [ -e "$HOME/.bash/env" ] ; then
-   source "$HOME/.cargo/env"
+if command -v mage &> /dev/null; then
+  _bb_tasks() {
+      COMPREPLY=( $(compgen -W "$(bb tasks |tail -n +3 |cut -f1 -d ' ')" -- ${COMP_WORDS[COMP_CWORD]}) );
+  }
+  # autocomplete filenames as well
+  complete -f -F _bb_tasks mage
 fi
-
-_bb_tasks() {
-    COMPREPLY=( $(compgen -W "$(bb tasks |tail -n +3 |cut -f1 -d ' ')" -- ${COMP_WORDS[COMP_CWORD]}) );
-}
-# autocomplete filenames as well
-complete -f -F _bb_tasks mage
-. "$HOME/.cargo/env"
 
 # workmux completions
 if command -v workmux &> /dev/null; then
