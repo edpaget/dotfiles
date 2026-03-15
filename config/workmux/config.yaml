@@ -4,6 +4,9 @@ nerdfont: false
 theme: dark
 mode: window
 
+post_create:
+  - mise trust
+
 panes:
   - command: <agent>
     focus: true
