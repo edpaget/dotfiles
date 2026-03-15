@@ -8,7 +8,7 @@ require 'rake'
 task :default => [:install]
 
 desc "Install dotfiles by creating symlinks"
-task :install => [:link, :ghostty]
+task :install => [:link, :ghostty, :claude]
 
 desc "Force install dotfiles, replacing all existing links"
 task :force => [:ghostty] do
@@ -24,7 +24,7 @@ def link_dotfiles(force: false)
   replace_all = force
 
   Dir['*'].each do |file|
-    next if %w[Rakefile README.md Brewfile CLAUDE.md].include? file
+    next if %w[Rakefile README.md Brewfile CLAUDE.md claude].include? file
 
     dest = File.join(ENV['HOME'], ".#{file}")
 
@@ -63,6 +63,33 @@ end
 def link_file file, dest
   puts "Linking #{dest}"
   system %Q{ln -s "$PWD/#{file}" "#{dest}"}
+end
+
+desc "Link Claude Code settings into ~/.claude"
+task :claude do
+  claude_dir = File.join(ENV['HOME'], ".claude")
+  claude_settings = File.join(claude_dir, "settings.json")
+  source = File.expand_path("claude/settings.json")
+
+  FileUtils.mkdir_p(claude_dir)
+
+  if File.exist?(claude_settings)
+    if File.identical?(source, claude_settings)
+      puts "Already linked #{claude_settings}"
+    else
+      print "Overwrite #{claude_settings} [yn]? "
+      if $stdin.gets.chomp == 'y'
+        system %Q{rm "#{claude_settings}"}
+        system %Q{ln -s "#{source}" "#{claude_settings}"}
+        puts "Linked #{claude_settings}"
+      else
+        puts "Skipping #{claude_settings}"
+      end
+    end
+  else
+    system %Q{ln -s "#{source}" "#{claude_settings}"}
+    puts "Linked #{claude_settings}"
+  end
 end
 
 desc "Link Ghostty config to macOS Application Support directory"
