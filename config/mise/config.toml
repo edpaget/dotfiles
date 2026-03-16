@@ -1,3 +1,6 @@
 [tools]
 bun = "latest"
 rust = "stable"
+
+[settings]
+trusted_config_paths = ["/Users/edwardpaget/Projects/metabase__worktrees", "/Users/edwardpaget/Projects/oidc-provider__worktrees"]

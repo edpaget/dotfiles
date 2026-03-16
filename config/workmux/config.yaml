@@ -15,7 +15,7 @@ panes:
   - command: <agent>
     focus: true
   - split: horizontal
-    size: 40
+    size: 80
     command: nvim --cmd "let g:workmux=1"
 
 status_icons:
