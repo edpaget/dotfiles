@@ -1,4 +1,4 @@
-agent: claude
+agent: 'claude --ide'
 merge_strategy: rebase
 nerdfont: false
 theme: dark

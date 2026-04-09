@@ -11,7 +11,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Leader key
 vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.g.maplocalleader = ","
 
 -- Basic options
 vim.opt.number = true
@@ -47,40 +47,25 @@ require("lazy").setup({
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
+    lazy = false,
     build = ":TSUpdate",
-    opts = {
-      ensure_installed = {
+    config = function()
+      require("nvim-treesitter").install({
         "clojure", "java", "rust", "typescript", "tsx",
         "javascript", "python", "lua", "vim", "vimdoc",
         "json", "yaml", "toml", "bash",
-      },
-      highlight = { enable = true },
-      indent = { enable = true },
-    },
+      })
+    end,
   },
 
   -- LSP
   {
     "williamboman/mason.nvim",
-    config = function()
-      require("mason").setup()
-    end,
+    opts = {},
   },
   {
-    "williamboman/mason-lspconfig.nvim",
+    "neovim/nvim-lspconfig",
     dependencies = { "williamboman/mason.nvim" },
-    config = function()
-      require("mason-lspconfig").setup({
-        ensure_installed = {
-          "rust_analyzer",
-          "ts_ls",
-          "pyright",
-          "jdtls",
-          "clojure_lsp",
-          "lua_ls",
-        },
-      })
-    end,
   },
 
   -- Completion
@@ -252,6 +237,19 @@ require("lazy").setup({
     },
   },
 
+  -- Claude Code integration (connects to Claude running in tmux pane)
+  {
+    "coder/claudecode.nvim",
+    opts = {
+      terminal = {
+        provider = "none",
+      },
+    },
+    keys = {
+      { "<leader>cc", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+    },
+  },
+
   -- Seamless tmux/nvim pane navigation
   {
     "christoomey/vim-tmux-navigator",
@@ -269,13 +267,20 @@ require("lazy").setup({
     ft = { "clojure", "fennel", "scheme" },
   },
 
-  -- Paredit for s-expression editing
+  -- Strict paren balancing (auto-close, balanced delete)
+  {
+    "sundbp/strict-paredit.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    ft = { "clojure", "fennel", "scheme" },
+    opts = {},
+  },
+
+  -- Paredit structural editing (slurp, barf, drag)
   {
     "julienvincent/nvim-paredit",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     ft = { "clojure", "fennel", "scheme" },
-    config = function()
-      require("nvim-paredit").setup()
-    end,
+    opts = {},
   },
 
   -- Statusline
@@ -305,6 +310,17 @@ require("lazy").setup({
       { "<leader>gg", function() require("neogit").open() end, desc = "Git status" },
     },
   },
+}, {
+  git = {
+    url_format = "git@github.com:%s.git",
+  },
+})
+
+-- Enable treesitter highlight and indent
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function()
+    pcall(vim.treesitter.start)
+  end,
 })
 
 -- Auto-open neo-tree in workmux sessions (close the empty starter buffer)
@@ -322,12 +338,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 
--- LSP server configs (Neovim 0.11+ native API)
-local servers = { "rust_analyzer", "ts_ls", "pyright", "jdtls", "clojure_lsp", "lua_ls" }
-for _, server in ipairs(servers) do
-  vim.lsp.config(server, {})
-end
-vim.lsp.enable(servers)
+-- LSP servers (configured but not auto-started; use <leader>cl to start)
+local lsp_servers = { "rust_analyzer", "ts_ls", "pyright", "jdtls", "clojure_lsp", "lua_ls" }
+
+vim.keymap.set("n", "<leader>cl", function()
+  vim.lsp.enable(lsp_servers)
+  vim.notify("LSP servers enabled")
+end, { desc = "Start LSP" })
 
 -- LSP keymaps
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -343,5 +360,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("<leader>cr", vim.lsp.buf.rename, "Rename")
     map("<leader>cd", vim.diagnostic.open_float, "Line diagnostics")
     map("<leader>cD", "<cmd>Telescope diagnostics<cr>", "Project diagnostics")
+    map("<leader>cf", function() vim.lsp.buf.format({ async = true }) end, "Format buffer")
+  end,
+})
+
+-- Clojure filetype settings
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "clojure" },
+  callback = function()
+    vim.bo.shiftwidth = 2
+    vim.bo.tabstop = 2
+    vim.bo.expandtab = true
+    vim.bo.lisp = true
+    vim.bo.lispwords =
+      "defn,defmacro,defmethod,defprotocol,defrecord,deftype,deftest,testing,"
+      .. "are,let,when,if,cond,condp,do,doseq,for,loop,fn,ns,binding,"
+      .. "with-open,with-redefs,reify,extend-type,extend-protocol"
   end,
 })

@@ -1,6 +1,9 @@
 [tools]
-bun = "latest"
 rust = "stable"
+tree-sitter = "latest"
+rust-analyzer = "latest"
+lua-language-server = "latest"
 
 [settings]
+env_file = ".env"
 trusted_config_paths = ["/Users/edwardpaget/Projects/metabase__worktrees", "/Users/edwardpaget/Projects/oidc-provider__worktrees"]
