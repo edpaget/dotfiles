@@ -16,3 +16,7 @@ config/StardewValley
 /.lsp/
 /config/nvim/lazy-lock.json
 /config/tmux/plugins/
+/config/op/
+/config/rdm/
+.DS_Store
+/.claude/settings.local.json
