@@ -1,8 +1,16 @@
 [tools]
+node = "24"
 rust = "stable"
 tree-sitter = "latest"
 rust-analyzer = "latest"
 lua-language-server = "latest"
+
+[tools.pnpm]
+version = "latest"
+depends = ["node"]
+
+[env]
+CLAUDE_CODE_NO_FLICKER = "1"
 
 [settings]
 env_file = ".env"

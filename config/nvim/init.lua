@@ -296,8 +296,24 @@ require("lazy").setup({
   -- Git signs in gutter
   {
     "lewis6991/gitsigns.nvim",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       require("gitsigns").setup()
+      local gs = require("gitsigns")
+      vim.keymap.set("n", "<leader>gl", gs.toggle_linehl, { desc = "Toggle line highlight" })
+      vim.keymap.set("n", "<leader>gw", gs.toggle_word_diff, { desc = "Toggle word diff" })
+      vim.keymap.set("n", "<leader>gb", gs.toggle_current_line_blame, { desc = "Toggle line blame" })
+      vim.keymap.set("n", "<leader>gd", gs.toggle_deleted, { desc = "Toggle deleted lines" })
+      vim.keymap.set("n", "]c", function() gs.nav_hunk("next") end, { desc = "Next hunk" })
+      vim.keymap.set("n", "[c", function() gs.nav_hunk("prev") end, { desc = "Prev hunk" })
+
+      -- Green for added, red for removed, yellow for changed
+      vim.api.nvim_set_hl(0, "GitSignsAdd", { fg = "#859900" })
+      vim.api.nvim_set_hl(0, "GitSignsChange", { fg = "#b58900" })
+      vim.api.nvim_set_hl(0, "GitSignsDelete", { fg = "#dc322f" })
+      vim.api.nvim_set_hl(0, "GitSignsAddLn", { bg = "#1a3a1a" })
+      vim.api.nvim_set_hl(0, "GitSignsChangeLn", { bg = "#3a3010" })
+      vim.api.nvim_set_hl(0, "GitSignsDeleteLn", { bg = "#3a1a1a" })
     end,
   },
 
