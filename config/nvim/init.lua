@@ -82,13 +82,22 @@ require("lazy").setup({
       local cmp = require("cmp")
       local luasnip = require("luasnip")
       cmp.setup({
+        performance = {
+          max_view_entries = 5,
+        },
         snippet = {
           expand = function(args) luasnip.lsp_expand(args.body) end,
         },
         mapping = cmp.mapping.preset.insert({
           ["<C-n>"] = cmp.mapping.select_next_item(),
           ["<C-p>"] = cmp.mapping.select_prev_item(),
-          ["<C-y>"] = cmp.mapping.confirm({ select = true }),
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.confirm({ select = true })
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
           ["<C-Space>"] = cmp.mapping.complete(),
         }),
         sources = {
