@@ -2,6 +2,9 @@
   "attribution": {
     "commit": ""
   },
+  "permissions": {
+    "defaultMode": "auto"
+  },
   "enabledMcpjsonServers": [
     "rdm"
   ],
@@ -51,10 +54,15 @@
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": true,
+    "lua-lsp@claude-plugins-official": true
   },
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
+  "showClearContextOnPlanAccept": true,
   "autoUpdatesChannel": "latest",
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "preferredNotifChannel": "ghostty",
+  "skipAutoPermissionPrompt": true,
+  "agentPushNotifEnabled": true
 }
