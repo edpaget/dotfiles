@@ -4,6 +4,7 @@ rust = "stable"
 tree-sitter = "latest"
 rust-analyzer = "latest"
 lua-language-server = "latest"
+hk = "1.45.0"
 
 [tools.pnpm]
 version = "latest"
@@ -14,4 +15,3 @@ CLAUDE_CODE_NO_FLICKER = "1"
 
 [settings]
 env_file = ".env"
-trusted_config_paths = ["/Users/edwardpaget/Projects/metabase__worktrees", "/Users/edwardpaget/Projects/oidc-provider__worktrees"]
