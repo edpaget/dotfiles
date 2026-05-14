@@ -283,7 +283,7 @@ require("lazy").setup({
             api_key = "TERM",
             name = "Ollama",
             end_point = "http://localhost:11434/v1/completions",
-            model = "qwen2.5-coder:14b",
+            model = "qwen2.5-coder:7b",
             optional = {
               max_tokens = 256,
               top_p = 0.9,
@@ -292,6 +292,7 @@ require("lazy").setup({
         },
         virtualtext = {
           auto_trigger_ft = { "*" },
+          show_on_completion_menu = true,
           keymap = {
             accept = "<C-y>",
             accept_line = "<C-l>",
