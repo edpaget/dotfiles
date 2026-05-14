@@ -269,6 +269,41 @@ require("lazy").setup({
     },
   },
 
+  -- Local-LLM code completion via Ollama (ghost-text FIM)
+  {
+    "milanglacier/minuet-ai.nvim",
+    lazy = false,
+    config = function()
+      require("minuet").setup({
+        provider = "openai_fim_compatible",
+        n_completions = 1,
+        context_window = 2048,
+        provider_options = {
+          openai_fim_compatible = {
+            api_key = "TERM",
+            name = "Ollama",
+            end_point = "http://localhost:11434/v1/completions",
+            model = "qwen2.5-coder:14b",
+            optional = {
+              max_tokens = 256,
+              top_p = 0.9,
+            },
+          },
+        },
+        virtualtext = {
+          auto_trigger_ft = { "*" },
+          keymap = {
+            accept = "<C-y>",
+            accept_line = "<C-l>",
+            prev = "<M-[>",
+            next = "<M-]>",
+            dismiss = "<C-e>",
+          },
+        },
+      })
+    end,
+  },
+
   -- Seamless tmux/nvim pane navigation
   {
     "christoomey/vim-tmux-navigator",
@@ -375,6 +410,9 @@ vim.api.nvim_create_autocmd("User", {
     end
   end,
 })
+
+-- Show diagnostics as virtual lines under the current line only
+vim.diagnostic.config({ virtual_lines = { current_line = true } })
 
 -- LSP servers (configured but not auto-started; use <leader>cl to start)
 local lsp_servers = { "rust_analyzer", "ts_ls", "pyright", "jdtls", "clojure_lsp", "lua_ls" }

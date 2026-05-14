@@ -23,3 +23,6 @@ export LANG=en_US.UTF-8
 # vcpkg
 export VCPKG_ROOT="$HOME/vcpkg"
 export PKG_CONFIG_PATH="/opt/homebrew/opt/openblas/lib/pkgconfig"
+
+# Keep Ollama models resident between completions (default is 5m)
+export OLLAMA_KEEP_ALIVE=30m
