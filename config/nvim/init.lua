@@ -51,7 +51,8 @@ require("lazy").setup({
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter").install({
-        "clojure", "java", "rust", "typescript", "tsx",
+        "clojure", "fennel", "scheme",
+        "java", "rust", "typescript", "tsx",
         "javascript", "python", "lua", "vim", "vimdoc",
         "json", "yaml", "toml", "bash",
       })
@@ -214,7 +215,7 @@ require("lazy").setup({
       "nvim-tree/nvim-web-devicons",
       "MunifTanjim/nui.nvim",
     },
-    cmd = { "Neotree" },
+    lazy = false,
     keys = {
       { "<leader>ft", "<cmd>Neotree toggle<cr>", desc = "Toggle file tree" },
       { "<leader>fe", "<cmd>Neotree focus<cr>", desc = "Focus file tree" },
@@ -249,13 +250,22 @@ require("lazy").setup({
   -- Claude Code integration (connects to Claude running in tmux pane)
   {
     "coder/claudecode.nvim",
+    lazy = false,
     opts = {
       terminal = {
         provider = "none",
       },
     },
     keys = {
-      { "<leader>cc", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+      {
+        "<leader>cc",
+        function()
+          vim.cmd("ClaudeCodeSend")
+          vim.fn.system([[tmux select-pane -t "$(tmux list-panes -F '#{pane_id} #{pane_current_command}' | awk '/claude/ {print $1; exit}')"]])
+        end,
+        mode = "v",
+        desc = "Send to Claude",
+      },
     },
   },
 
@@ -348,8 +358,11 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Auto-open neo-tree in workmux sessions (close the empty starter buffer)
-vim.api.nvim_create_autocmd("VimEnter", {
+-- Auto-open neo-tree in workmux sessions (close the empty starter buffer).
+-- VeryLazy fires after lazy.nvim finishes loading plugins, so :Neotree is real
+-- (not a lazy-load stub) even on a fresh install.
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VeryLazy",
   callback = function()
     if vim.g.workmux then
       vim.cmd("Neotree action=focus")
@@ -387,6 +400,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("<leader>cD", "<cmd>Telescope diagnostics<cr>", "Project diagnostics")
     map("<leader>cf", function() vim.lsp.buf.format({ async = true }) end, "Format buffer")
   end,
+})
+
+-- Format Rust on save via rust-analyzer (rustfmt)
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.rs",
+  callback = function() vim.lsp.buf.format({ async = false }) end,
 })
 
 -- Clojure filetype settings
