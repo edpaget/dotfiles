@@ -152,6 +152,7 @@ require("lazy").setup({
       spec = {
         { "<leader>b", group = "buffer" },
         { "<leader>c", group = "code" },
+        { "<leader>cj", group = "java" },
         { "<leader>f", group = "file" },
         { "<leader>g", group = "git" },
         { "<leader>h", group = "help" },
@@ -322,6 +323,38 @@ require("lazy").setup({
     ft = { "clojure", "fennel", "scheme" },
   },
 
+  -- Java LSP (jdtls wrapper with Java-specific actions: organize imports,
+  -- extract method/variable, generate getters/setters, test runner, DAP)
+  {
+    "mfussenegger/nvim-jdtls",
+    ft = "java",
+    config = function()
+      local function start_jdtls()
+        local root = vim.fs.root(0, { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" })
+        if not root then return end
+        local workspace = vim.fn.stdpath("cache") .. "/jdtls-workspace/" .. vim.fn.fnamemodify(root, ":t")
+        require("jdtls").start_or_attach({
+          cmd = { "jdtls", "-data", workspace },
+          root_dir = root,
+        })
+      end
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "java",
+        callback = start_jdtls,
+      })
+      -- Start for the buffer that triggered ft=java lazy-load
+      start_jdtls()
+    end,
+    keys = {
+      { "<leader>cjo", function() require("jdtls").organize_imports() end, desc = "Organize imports", ft = "java" },
+      { "<leader>cjv", function() require("jdtls").extract_variable() end, desc = "Extract variable", ft = "java" },
+      { "<leader>cjc", function() require("jdtls").extract_constant() end, desc = "Extract constant", ft = "java" },
+      { "<leader>cjm", function() require("jdtls").extract_method() end, mode = "v", desc = "Extract method", ft = "java" },
+      { "<leader>cjt", function() require("jdtls").test_nearest_method() end, desc = "Test nearest method", ft = "java" },
+      { "<leader>cjT", function() require("jdtls").test_class() end, desc = "Test class", ft = "java" },
+    },
+  },
+
   -- Strict paren balancing (auto-close, balanced delete)
   {
     "sundbp/strict-paredit.nvim",
@@ -416,7 +449,8 @@ vim.api.nvim_create_autocmd("User", {
 vim.diagnostic.config({ virtual_lines = { current_line = true } })
 
 -- LSP servers (configured but not auto-started; use <leader>cl to start)
-local lsp_servers = { "rust_analyzer", "ts_ls", "pyright", "jdtls", "clojure_lsp", "lua_ls" }
+-- Note: jdtls is started by nvim-jdtls on FileType java, not via vim.lsp.enable
+local lsp_servers = { "rust_analyzer", "ts_ls", "pyright", "clojure_lsp", "lua_ls" }
 
 vim.keymap.set("n", "<leader>cl", function()
   vim.lsp.enable(lsp_servers)
