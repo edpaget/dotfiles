@@ -10,6 +10,22 @@ rake install
 
 This symlinks each top-level file/directory into `$HOME` as a dotfile (e.g., `bashrc` -> `~/.bashrc`). Files like `Rakefile`, `README.md`, and `Brewfile` are excluded.
 
+### User-local install (no admin / no `/opt/homebrew`)
+
+On a machine where you can only install into your home directory, install Homebrew into `$HOME` (e.g. `~/homebrew`) and the shell config will pick it up automatically:
+
+```bash
+git clone https://github.com/Homebrew/brew ~/homebrew
+# then `rake install` and start a new shell
+```
+
+`bash/env` probes `~/homebrew`, `~/.homebrew`, `~/.linuxbrew`, `/opt/homebrew`, the Linuxbrew system path, and `/usr/local/bin/brew` in that order, so the first one that exists wins.
+
+Caveats when running from a user-local Homebrew:
+- Most `brew` entries in the `Brewfile` build from source and work fine — `brew bundle` will compile what isn't bottled.
+- `cask` entries (`font-iosevka`, `font-iosevka-term-slab-nerd-font`) install into system locations and generally need admin. Install fonts manually into `~/Library/Fonts` (macOS) or `~/.local/share/fonts` (Linux) instead.
+- `emacs-plus@29` is a large source build; if Emacs isn't needed on this machine just skip it.
+
 ## What's Included
 
 - **bash/** — Shell config split into `aliases`, `config`, `env`, and `prompt`, sourced from `bashrc`

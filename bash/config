@@ -21,5 +21,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-. <(mise completion bash)
-eval "$(mise activate bash)"
+if command -v mise &>/dev/null; then
+  . <(mise completion bash)
+fi

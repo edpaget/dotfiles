@@ -1,6 +1,7 @@
 [tools]
 node = "24"
 rust = "stable"
+java = "temurin-21"
 tree-sitter = "latest"
 rust-analyzer = "latest"
 lua-language-server = "latest"

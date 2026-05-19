@@ -20,9 +20,17 @@ if [ `uname` == "Linux" ]; then
 fi
 
 if [ `uname` == "Darwin" ]; then
-   alias la='gls -al --color=auto'
-   alias ls='gls --color=auto'
-   alias grep='ggrep --color=auto'
-   alias fgrep='gfgrep --color=auto'
-   alias egrep='gegrep --color=auto'
+   # Prefer GNU coreutils (gls, ggrep, etc. from `brew install coreutils`/`grep`)
+   # but fall back to BSD tools when GNU isn't installed (e.g. minimal/user-only setups).
+   if command -v gls &>/dev/null; then
+     alias la='gls -al --color=auto'
+     alias ls='gls --color=auto'
+   else
+     alias la='ls -al'
+   fi
+   if command -v ggrep &>/dev/null; then
+     alias grep='ggrep --color=auto'
+     alias fgrep='gfgrep --color=auto'
+     alias egrep='gegrep --color=auto'
+   fi
 fi

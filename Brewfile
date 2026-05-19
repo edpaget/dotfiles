@@ -1,48 +1,38 @@
-tap "babashka/brew"
-tap "clojure-lsp/brew"
-tap "d12frosted/emacs-plus"
-tap "homebrew/bundle"
-tap "homebrew/services"
-tap "osx-cross/arm"
-tap "qmk/qmk"
+# Global tools — always-on system CLIs.
+# Project-scoped toolchains (node, rust, language servers, etc.) live in
+# config/mise/config.toml so they can be overridden per-project.
+
 tap "raine/workmux"
-brew "gmp"
-brew "coreutils"
-brew "mise"
+tap "edpaget/rdm"
+
+# Shell & core utilities
 brew "bash"
-brew "bzip2"
-brew "xz"
-brew "glib"
-brew "clang-format"
-brew "cmake"
-brew "cppcheck"
-brew "cpplint"
-brew "direnv"
-brew "fd"
-brew "gcc"
-brew "gdk-pixbuf"
-brew "git"
+brew "coreutils"
 brew "grep"
-brew "harfbuzz"
-brew "jq"
-brew "libgccjit"
-brew "librsvg"
-brew "libusb"
-brew "neovim"
-brew "llvm"
-brew "ollama"
-brew "pipx"
-brew "poac"
-brew "ripgrep"
-brew "shellcheck"
+brew "git"
+brew "mise"
 brew "starship"
+
+# Terminal multiplexer & editor
 brew "tmux"
-brew "vcpkg"
-brew "wimlib"
-brew "zlib"
-brew "babashka/brew/neil"
-brew "clojure-lsp/brew/clojure-lsp-native"
+brew "neovim"
+
+# Search & data tooling
+brew "ripgrep"
+brew "fd"
+brew "jq"
+
+# Local LLM runtime
+brew "ollama"
+
+# LLVM toolchain (headers + llvm-config for inkwell/llvm-sys-backed compiler work).
+# Pinned to a major because llvm-sys requires an exact LLVM major match.
+brew "llvm@22"
+
+# Personal tools
 brew "raine/workmux/workmux"
-brew "d12frosted/emacs-plus/emacs-plus@29", args: ["with-native-comp", "with-retro-sink-bw-icon"]
+brew "edpaget/rdm/rdm-cli"
+
+# Fonts (cask — needs admin; skip on user-local installs and drop fonts into ~/Library/Fonts manually)
 cask "font-iosevka"
 cask "font-iosevka-term-slab-nerd-font"

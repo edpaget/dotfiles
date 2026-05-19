@@ -153,8 +153,10 @@ Assume you are assisting a developer working in an advanced Emacs environment, p
 (use-package! mcp
   :after gptel
   :custom (mcp-hub-servers
-           '(("clj-prj" . (:command "/bin/bash"
-                           :args ("-c" "PATH=/opt/homebrew/bin:$PATH && clojure -X:mcp :port 50605")))))
+           `(("clj-prj" . (:command "/bin/bash"
+                           :args ("-c" ,(format "PATH=%s:$PATH && clojure -X:mcp :port 50605"
+                                                (or (getenv "HOMEBREW_PREFIX")
+                                                    (expand-file-name "~/homebrew"))))))))
   :config (require 'mcp-hub))
 
 (map! :after gptel

@@ -4,7 +4,21 @@ HISTFILESIZE=20000
 
 ### Path Settings
 # Homebrew (sets HOMEBREW_PREFIX, PATH, etc.)
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Probes user-local prefixes first so this works on machines where Homebrew
+# is installed into $HOME (no admin access) rather than /opt/homebrew or /usr/local.
+for _brew in \
+  "$HOME/homebrew/bin/brew" \
+  "$HOME/.homebrew/bin/brew" \
+  "$HOME/.linuxbrew/bin/brew" \
+  "/opt/homebrew/bin/brew" \
+  "/home/linuxbrew/.linuxbrew/bin/brew" \
+  "/usr/local/bin/brew"; do
+  if [ -x "$_brew" ]; then
+    eval "$("$_brew" shellenv)"
+    break
+  fi
+done
+unset _brew
 
 PATH="$HOME/bin:$PATH"
 PATH="$HOME/.local/bin:$PATH"
@@ -22,7 +36,9 @@ export LANG=en_US.UTF-8
 
 # vcpkg
 export VCPKG_ROOT="$HOME/vcpkg"
-export PKG_CONFIG_PATH="/opt/homebrew/opt/openblas/lib/pkgconfig"
+if [ -n "$HOMEBREW_PREFIX" ] && [ -d "$HOMEBREW_PREFIX/opt/openblas/lib/pkgconfig" ]; then
+  export PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/openblas/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+fi
 
 # Keep Ollama models resident between completions (default is 5m)
 export OLLAMA_KEEP_ALIVE=30m
