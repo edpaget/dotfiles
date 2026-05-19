@@ -24,6 +24,7 @@ brew "jq"
 
 # Local LLM runtime
 brew "ollama"
+brew "pi-coding-agent"
 
 # LLVM toolchain (headers + llvm-config for inkwell/llvm-sys-backed compiler work).
 # Pinned to a major because llvm-sys requires an exact LLVM major match.

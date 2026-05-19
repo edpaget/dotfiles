@@ -1,0 +1,15 @@
+{
+  "providers": {
+    "ollama": {
+      "baseUrl": "http://localhost:11434/v1",
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "models": [
+        {
+          "id": "qwen3-coder-next:q8_0",
+          "name": "Qwen3-Coder-Next 80B (local)"
+        }
+      ]
+    }
+  }
+}
