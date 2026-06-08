@@ -55,6 +55,7 @@ require("lazy").setup({
         "java", "rust", "typescript", "tsx",
         "javascript", "python", "lua", "vim", "vimdoc",
         "json", "yaml", "toml", "bash",
+        "markdown", "markdown_inline",
       })
     end,
   },
@@ -369,6 +370,17 @@ require("lazy").setup({
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     ft = { "clojure", "fennel", "scheme" },
     opts = {},
+  },
+
+  -- Markdown rendering (opens rendered by default)
+  {
+    "OXY2DEV/markview.nvim",
+    lazy = false, -- recommended: markview manages its own lazy loading
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    opts = {},
+    keys = {
+      { "<leader>mt", "<cmd>Markview toggle<cr>", desc = "Toggle markdown render" },
+    },
   },
 
   -- Statusline
