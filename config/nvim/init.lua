@@ -75,7 +75,10 @@ require("lazy").setup({
   -- two rust-analyzer clients to the same buffer, and :checkhealth will not
   -- catch it because its conflict detector only looks for the legacy
   -- lspconfig setup() path, not vim.lsp.enable()). Attaches automatically on
-  -- opening a .rs buffer; no <leader>cl needed for Rust.
+  -- opening a .rs buffer; no <leader>cl needed for Rust. Verified live in a
+  -- headless run: opening a .rs buffer attaches exactly one client named
+  -- "rust-analyzer" (no double-attach), and :RustLsp runnables round-trips
+  -- to a real rust-analyzer response (see commit message for the transcript).
   {
     "mrcjkb/rustaceanvim",
     version = "^9",
