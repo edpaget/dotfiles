@@ -1,9 +1,15 @@
 [tools]
 node = "24"
+# rust-analyzer must stay declared before rust: mise prepends tool bin dirs to
+# PATH in [tools] declaration order, and rust's bin dir (~/.cargo/bin) ships a
+# rustup rust-analyzer proxy that shadows mise's own pin whenever rust comes
+# first. Verified live on 2026-08-14 by toggling the order and watching
+# `mise which rust-analyzer` flip between the two. Pinned (not "latest") so
+# the version is reproducible from this repo.
+rust-analyzer = "2026-04-06"
 rust = "stable"
 java = "temurin-21"
 tree-sitter = "latest"
-rust-analyzer = "latest"
 lua-language-server = "latest"
 hk = "1.45.0"
 
