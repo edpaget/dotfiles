@@ -1,11 +1,17 @@
 [tools]
 node = "24"
-# rust-analyzer must stay declared before rust: mise prepends tool bin dirs to
-# PATH in [tools] declaration order, and rust's bin dir (~/.cargo/bin) ships a
-# rustup rust-analyzer proxy that shadows mise's own pin whenever rust comes
-# first. Verified live on 2026-08-14 by toggling the order and watching
-# `mise which rust-analyzer` flip between the two. Pinned (not "latest") so
-# the version is reproducible from this repo.
+# rust-analyzer is declared before rust as a matter of habit (mise prefers
+# tool bin dirs in [tools] declaration order when a single config file is in
+# play), but do NOT rely on that ordering alone: rust's bin dir (~/.cargo/bin)
+# ships a rustup rust-analyzer proxy, and once any second mise config source
+# also declares these tools (e.g. `mise ls`/`mise which` invoked with
+# MISE_GLOBAL_CONFIG_FILE pointed elsewhere, or a future project-local
+# mise.toml), declaration order stops being authoritative — verified live on
+# 2026-08-14: merging a second config file flipped `mise which rust-analyzer`
+# straight back to ~/.cargo/bin even with this order intact. The real,
+# order-independent guarantee is the `_.path` prepend in [env] below. Pinned
+# (not "latest") so the version is reproducible from this repo; keep the
+# version here in sync with the path in [env]._.path.
 rust-analyzer = "2026-04-06"
 rust = "stable"
 java = "temurin-21"
@@ -19,6 +25,16 @@ depends = ["node"]
 
 [env]
 CLAUDE_CODE_NO_FLICKER = "1"
+# Force mise's pinned rust-analyzer to the front of PATH, unconditionally
+# ahead of every tool bin dir including rust's ~/.cargo/bin (which contains
+# the dead rustup rust-analyzer proxy this phase is working around — see
+# roadmap nvim-tmux-rust, phase 1). Unlike [tools] declaration order,
+# `[env]._.path` entries are prepended first no matter how many mise config
+# files get merged in, so this is the mechanism that's actually load-bearing
+# for keeping `vim.fn.exepath("rust-analyzer")` and `command -v rust-analyzer`
+# pointed at mise's build instead of rustup's stderr-noisy fallback proxy.
+# Keep this version in sync with the rust-analyzer pin above.
+_.path = ["{{ env.HOME }}/.local/share/mise/installs/rust-analyzer/2026-04-06"]
 
 [settings]
 env_file = ".env"
