@@ -104,11 +104,38 @@ require("lazy").setup({
     end,
     keys = {
       { "<leader>cRr", function() vim.cmd.RustLsp("runnables") end, desc = "Runnables", ft = "rust" },
+      -- Test running: this testables keymap is the whole test-running story.
+      -- It opens a picker of #[test] fns in the buffer and reports pass/fail
+      -- inline (float/split), so no separate neotest UI is added — neotest
+      -- would only be worth it for a dedicated test-summary panel, and if
+      -- ever added must wire rustaceanvim's own "rustaceanvim.neotest"
+      -- adapter, never rouge8/neotest-rust (the two are mutually exclusive
+      -- per rustaceanvim's README). cargo-nextest is resolved from the mise
+      -- shim on PATH already; no bundled test-runner binary is added here.
       { "<leader>cRt", function() vim.cmd.RustLsp("testables") end, desc = "Testables", ft = "rust" },
       { "<leader>cRe", function() vim.cmd.RustLsp("expandMacro") end, desc = "Expand macro", ft = "rust" },
       { "<leader>cRo", function() vim.cmd.RustLsp("openCargo") end, desc = "Open Cargo.toml", ft = "rust" },
       { "<leader>cRp", function() vim.cmd.RustLsp("parentModule") end, desc = "Parent module", ft = "rust" },
       { "<leader>cRx", function() vim.cmd.RustLsp("explainError") end, desc = "Explain error", ft = "rust" },
+    },
+  },
+
+  -- Cargo.toml ergonomics: inline dependency version hints, feature-list
+  -- completion, and upgrade code actions. lsp.enabled runs crates.nvim as
+  -- its own in-process LSP client scoped to Cargo.toml buffers, so its
+  -- completions/hover/actions flow through the existing generic
+  -- "nvim_lsp" cmp-nvim-lsp source (nvim-cmp block below) — no dedicated
+  -- `{ name = "crates" }` cmp source needed (that's the older, alternative
+  -- completion.cmp integration path; combining both would duplicate
+  -- completions). Not added to lsp_servers/<leader>cl below either: crates.nvim
+  -- manages its own LSP client lifecycle via this spec's `event`, independent
+  -- of that list.
+  {
+    "Saecki/crates.nvim",
+    event = { "BufRead Cargo.toml" },
+    opts = {
+      completion = { crates = { enabled = true } },
+      lsp = { enabled = true, actions = true, completion = true, hover = true },
     },
   },
 
