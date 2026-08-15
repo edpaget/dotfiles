@@ -75,8 +75,10 @@ require("lazy").setup({
   -- two rust-analyzer clients to the same buffer, and :checkhealth will not
   -- catch it because its conflict detector only looks for the legacy
   -- lspconfig setup() path, not vim.lsp.enable()). Attaches automatically on
-  -- opening a .rs buffer; no <leader>cl needed for Rust. Verified live in a
-  -- headless run: opening a .rs buffer attaches exactly one client named
+  -- opening a .rs buffer, independently of the other four servers'
+  -- vim.lsp.enable() call below (there is no manual LSP-start keymap at
+  -- all anymore). Verified live in a headless run: opening a .rs buffer
+  -- attaches exactly one client named
   -- "rust-analyzer" (no double-attach), and :RustLsp runnables round-trips
   -- to a real rust-analyzer response (see commit message for the transcript).
   {
@@ -501,7 +503,13 @@ vim.api.nvim_create_autocmd("User", {
 -- Show diagnostics as virtual lines under the current line only
 vim.diagnostic.config({ virtual_lines = { current_line = true } })
 
--- LSP servers (configured but not auto-started; use <leader>cl to start)
+-- LSP servers: auto-started unconditionally at startup (no opt-out). This
+-- used to be gated behind a manual <leader>cl keymap to reduce startup cost
+-- (commit dd9abe2), but rustaceanvim and minuet-ai.nvim are both already
+-- `lazy = false` and pay full startup cost every session with no opt-out of
+-- their own, so gating only these four servers behind a keypress no longer
+-- bought meaningful consistency. Always-on now; ts_ls/pyright silently fail
+-- to start if their binaries aren't installed (no hard startup error).
 -- Note: jdtls is started by nvim-jdtls on FileType java, not via vim.lsp.enable
 -- Note: rust_analyzer is intentionally excluded here. rustaceanvim owns Rust's
 -- LSP client and attaches automatically on opening a .rs buffer; re-adding
@@ -510,11 +518,7 @@ vim.diagnostic.config({ virtual_lines = { current_line = true } })
 -- won't warn about it since its conflict detector only matches the legacy
 -- lspconfig setup() path, not vim.lsp.enable(). Do not re-add it.
 local lsp_servers = { "ts_ls", "pyright", "clojure_lsp", "lua_ls" }
-
-vim.keymap.set("n", "<leader>cl", function()
-  vim.lsp.enable(lsp_servers)
-  vim.notify("LSP servers enabled")
-end, { desc = "Start LSP" })
+vim.lsp.enable(lsp_servers)
 
 -- LSP keymaps
 vim.api.nvim_create_autocmd("LspAttach", {
