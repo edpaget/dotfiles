@@ -83,6 +83,23 @@ require("lazy").setup({
     "mrcjkb/rustaceanvim",
     version = "^9",
     lazy = false, -- required; rustaceanvim manages its own lazy-loading, do NOT use ft = "rust"
+    init = function()
+      -- Use clippy instead of the default plain `cargo check` on save.
+      -- Deliberately not adding cargo.allFeatures/cargo.features="all" or any
+      -- procMacro/buildScripts/rustfmt/inlay-hint keys here — see phase body
+      -- for why (unverified/unsafe per research). check.overrideCommand is
+      -- the escape hatch if clippy-as-check proves too slow/noisy on a given
+      -- workspace (see rust-analyzer#19336).
+      vim.g.rustaceanvim = {
+        server = {
+          default_settings = {
+            ["rust-analyzer"] = {
+              check = { command = "clippy" },
+            },
+          },
+        },
+      }
+    end,
     keys = {
       { "<leader>cRr", function() vim.cmd.RustLsp("runnables") end, desc = "Runnables", ft = "rust" },
       { "<leader>cRt", function() vim.cmd.RustLsp("testables") end, desc = "Testables", ft = "rust" },
