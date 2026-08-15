@@ -70,6 +70,26 @@ require("lazy").setup({
     dependencies = { "williamboman/mason.nvim" },
   },
 
+  -- Rust LSP (replaces lspconfig's rust_analyzer entirely; do not add
+  -- "rust_analyzer" to lsp_servers below — configuring both double-attaches
+  -- two rust-analyzer clients to the same buffer, and :checkhealth will not
+  -- catch it because its conflict detector only looks for the legacy
+  -- lspconfig setup() path, not vim.lsp.enable()). Attaches automatically on
+  -- opening a .rs buffer; no <leader>cl needed for Rust.
+  {
+    "mrcjkb/rustaceanvim",
+    version = "^9",
+    lazy = false, -- required; rustaceanvim manages its own lazy-loading, do NOT use ft = "rust"
+    keys = {
+      { "<leader>cRr", function() vim.cmd.RustLsp("runnables") end, desc = "Runnables", ft = "rust" },
+      { "<leader>cRt", function() vim.cmd.RustLsp("testables") end, desc = "Testables", ft = "rust" },
+      { "<leader>cRe", function() vim.cmd.RustLsp("expandMacro") end, desc = "Expand macro", ft = "rust" },
+      { "<leader>cRo", function() vim.cmd.RustLsp("openCargo") end, desc = "Open Cargo.toml", ft = "rust" },
+      { "<leader>cRp", function() vim.cmd.RustLsp("parentModule") end, desc = "Parent module", ft = "rust" },
+      { "<leader>cRx", function() vim.cmd.RustLsp("explainError") end, desc = "Explain error", ft = "rust" },
+    },
+  },
+
   -- Completion
   {
     "hrsh7th/nvim-cmp",
@@ -154,6 +174,7 @@ require("lazy").setup({
         { "<leader>b", group = "buffer" },
         { "<leader>c", group = "code" },
         { "<leader>cj", group = "java" },
+        { "<leader>cR", group = "rust" },
         { "<leader>f", group = "file" },
         { "<leader>g", group = "git" },
         { "<leader>h", group = "help" },
@@ -462,7 +483,13 @@ vim.diagnostic.config({ virtual_lines = { current_line = true } })
 
 -- LSP servers (configured but not auto-started; use <leader>cl to start)
 -- Note: jdtls is started by nvim-jdtls on FileType java, not via vim.lsp.enable
-local lsp_servers = { "rust_analyzer", "ts_ls", "pyright", "clojure_lsp", "lua_ls" }
+-- Note: rust_analyzer is intentionally excluded here. rustaceanvim owns Rust's
+-- LSP client and attaches automatically on opening a .rs buffer; re-adding
+-- "rust_analyzer" would double-attach a second rust-analyzer client to the
+-- same buffer (duplicate diagnostics/hover/completion), and :checkhealth
+-- won't warn about it since its conflict detector only matches the legacy
+-- lspconfig setup() path, not vim.lsp.enable(). Do not re-add it.
+local lsp_servers = { "ts_ls", "pyright", "clojure_lsp", "lua_ls" }
 
 vim.keymap.set("n", "<leader>cl", function()
   vim.lsp.enable(lsp_servers)
