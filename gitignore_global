@@ -7,3 +7,5 @@
 .ensime_cache
 .m2
 classpath.txt
+
+**/.claude/settings.local.json

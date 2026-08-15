@@ -18,5 +18,8 @@ config/StardewValley
 /config/tmux/plugins/
 /config/op/
 /config/rdm/
+/config/1Password/
+/config/cagent/
+/config/fbm/
 .DS_Store
 /.claude/settings.local.json
