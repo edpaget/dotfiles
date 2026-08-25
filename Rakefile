@@ -94,39 +94,25 @@ end
 
 desc "Link Ghostty config to macOS Application Support directory"
 task :ghostty do
-  # Ghostty reads its config from a different place on each platform, and the
-  # macOS path is not merely preferred there — on Linux it would create a bogus
-  # ~/Library tree that Ghostty never looks at, so `rake install` would report
-  # success and change nothing the terminal reads.
-  ghostty_dir = if RbConfig::CONFIG['host_os'] =~ /darwin/
-                  File.join(ENV['HOME'], "Library", "Application Support", "com.mitchellh.ghostty")
-                else
-                  File.join(ENV.fetch('XDG_CONFIG_HOME', File.join(ENV['HOME'], '.config')), "ghostty")
-                end
+  # macOS ONLY, and the guard is load-bearing rather than tidy.
+  #
+  # On Linux this task must do nothing: `link_dotfiles` already symlinks this
+  # repo's config/ directory to ~/.config, so ~/.config/ghostty IS
+  # config/ghostty and Ghostty reads the tracked file directly. Linking
+  # config/ghostty/config into ~/.config/ghostty/config there means linking a
+  # file onto itself — which replaces the tracked file with a self-referential
+  # symlink and leaves Ghostty with no readable config at all. (Observed doing
+  # exactly that on 2026-08-25 before the guard existed.)
+  #
+  # macOS needs the link because Ghostty reads from ~/Library/Application
+  # Support/com.mitchellh.ghostty/ instead, which no XDG symlink covers.
+  next unless RbConfig::CONFIG['host_os'] =~ /darwin/
+
+  ghostty_dir = File.join(ENV['HOME'], "Library", "Application Support", "com.mitchellh.ghostty")
   ghostty_config = File.join(ghostty_dir, "config")
   source = File.expand_path("config/ghostty/config")
 
   FileUtils.mkdir_p(ghostty_dir)
-
-  # Linux gets an extra overlay linked in as `config.local`, which the shared
-  # config includes optionally. Ghostty resolves that relative path next to the
-  # DEPLOYED config, so linking it here is what activates it — and macOS, where
-  # no such link is made, silently skips the include.
-  #
-  # It exists for font-size: the same panel is a 3008x1692 workspace on macOS
-  # and 2560x1440 under Plasma at 200%, so a point is physically larger on
-  # Linux and a size tuned on a Mac reads oversized.
-  unless RbConfig::CONFIG['host_os'] =~ /darwin/
-    overlay_source = File.expand_path("config/ghostty/config.linux")
-    overlay_dest = File.join(ghostty_dir, "config.local")
-
-    if File.symlink?(overlay_dest) || File.exist?(overlay_dest)
-      puts "Already linked #{overlay_dest}" if File.identical?(overlay_source, overlay_dest)
-    else
-      system %Q{ln -s "#{overlay_source}" "#{overlay_dest}"}
-      puts "Linked #{overlay_dest}"
-    end
-  end
 
   if File.exist?(ghostty_config)
     if File.identical?(source, ghostty_config)
