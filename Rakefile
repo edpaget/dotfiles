@@ -94,7 +94,15 @@ end
 
 desc "Link Ghostty config to macOS Application Support directory"
 task :ghostty do
-  ghostty_dir = File.join(ENV['HOME'], "Library", "Application Support", "com.mitchellh.ghostty")
+  # Ghostty reads its config from a different place on each platform, and the
+  # macOS path is not merely preferred there — on Linux it would create a bogus
+  # ~/Library tree that Ghostty never looks at, so `rake install` would report
+  # success and change nothing the terminal reads.
+  ghostty_dir = if RbConfig::CONFIG['host_os'] =~ /darwin/
+                  File.join(ENV['HOME'], "Library", "Application Support", "com.mitchellh.ghostty")
+                else
+                  File.join(ENV.fetch('XDG_CONFIG_HOME', File.join(ENV['HOME'], '.config')), "ghostty")
+                end
   ghostty_config = File.join(ghostty_dir, "config")
   source = File.expand_path("config/ghostty/config")
 
