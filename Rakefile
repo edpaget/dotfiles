@@ -20,6 +20,48 @@ task :link do
   link_dotfiles
 end
 
+# Top-level entries that must be linked CHILD BY CHILD rather than as a whole
+# directory.
+#
+# ~/.config is the case that forced this, and the reasoning is Linux-specific
+# but applies everywhere. On Linux nearly every application keeps state there —
+# Plasma's panel layout and global settings, GTK, dconf, Baloo — so linking the
+# whole directory into this repo means three bad things:
+#
+#   1. Application runtime state lands inside a git repo and shows up as
+#      untracked noise (Trolltech.conf, baloofilerc, dconf/ all appeared).
+#   2. `rake install` can DELETE a live desktop's settings, because
+#      replace_file is `rm -rf dest` — and doing that to a running session
+#      loses everything the session writes at logout. Observed on 2026-08-25:
+#      one `rake install` took out the desktop background, taskbar pins and
+#      every other Plasma preference on that machine.
+#   3. Ordinary git operations become destructive. `git clean -fdx` in this
+#      repo would wipe the desktop's configuration, with no warning that it
+#      could.
+#
+# Linking the children instead means ~/.config stays a real directory owned by
+# the machine, and only the entries this repo actually tracks are symlinks.
+LINK_CHILDREN = %w[config].freeze
+
+def link_children(file, dest)
+  FileUtils.mkdir_p(dest)
+
+  Dir[File.join(file, '*')].each do |child|
+    child_dest = File.join(dest, File.basename(child))
+    child_source = File.expand_path(child)
+
+    if File.symlink?(child_dest) && File.identical?(child_source, child_dest)
+      puts "Already linked #{child_dest}"
+    elsif File.exist?(child_dest) || File.symlink?(child_dest)
+      # Never rm -rf here: on Linux these siblings are live application state.
+      puts "Skipping #{child_dest} (exists and is not our link — remove it by hand if you want it linked)"
+    else
+      system %Q{ln -s "#{child_source}" "#{child_dest}"}
+      puts "Linked #{child_dest}"
+    end
+  end
+end
+
 def link_dotfiles(force: false)
   replace_all = force
 
@@ -27,6 +69,14 @@ def link_dotfiles(force: false)
     next if %w[Rakefile README.md Brewfile CLAUDE.md claude].include? file
 
     dest = File.join(ENV['HOME'], ".#{file}")
+
+    if LINK_CHILDREN.include?(file)
+      # If a previous run replaced ~/.config with a symlink to this repo, undo
+      # that first — removing the SYMLINK, never its target.
+      File.delete(dest) if File.symlink?(dest)
+      link_children(file, dest)
+      next
+    end
 
     if dest.nil?
       puts "Not linking #{file}"
