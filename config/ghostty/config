@@ -7,3 +7,20 @@ theme = iTerm2 Solarized Dark
 window-padding-x = 8
 window-padding-y = 4
 keybind = shift+enter=text:\n
+
+# Per-machine overrides, loaded last so they win. `?` makes the include
+# optional: a machine without the file is not an error.
+#
+# The path resolves next to the DEPLOYED config (the symlink in
+# ~/.config/ghostty or ~/Library/Application Support/com.mitchellh.ghostty),
+# not next to this file in the dotfiles repo — verified on oedipus 2026-08-25.
+# That is what lets the Rakefile link an OS-specific overlay into place on one
+# platform and leave the other untouched.
+#
+# font-size is the setting that needs it. Points are interpreted against the
+# display's LOGICAL resolution, and the same physical panel does not present
+# the same logical size on both platforms: macOS gives the Pro Display XDR a
+# 3008x1692 workspace, while Plasma at 200% on the same panel gives 2560x1440.
+# Fewer logical pixels across the same glass means every point is physically
+# larger, so a size tuned on macOS reads oversized on Linux.
+config-file = ?config.local

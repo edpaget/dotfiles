@@ -108,6 +108,26 @@ task :ghostty do
 
   FileUtils.mkdir_p(ghostty_dir)
 
+  # Linux gets an extra overlay linked in as `config.local`, which the shared
+  # config includes optionally. Ghostty resolves that relative path next to the
+  # DEPLOYED config, so linking it here is what activates it — and macOS, where
+  # no such link is made, silently skips the include.
+  #
+  # It exists for font-size: the same panel is a 3008x1692 workspace on macOS
+  # and 2560x1440 under Plasma at 200%, so a point is physically larger on
+  # Linux and a size tuned on a Mac reads oversized.
+  unless RbConfig::CONFIG['host_os'] =~ /darwin/
+    overlay_source = File.expand_path("config/ghostty/config.linux")
+    overlay_dest = File.join(ghostty_dir, "config.local")
+
+    if File.symlink?(overlay_dest) || File.exist?(overlay_dest)
+      puts "Already linked #{overlay_dest}" if File.identical?(overlay_source, overlay_dest)
+    else
+      system %Q{ln -s "#{overlay_source}" "#{overlay_dest}"}
+      puts "Linked #{overlay_dest}"
+    end
+  end
+
   if File.exist?(ghostty_config)
     if File.identical?(source, ghostty_config)
       puts "Already linked #{ghostty_config}"

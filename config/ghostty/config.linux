@@ -1,0 +1,16 @@
+# Linux overlay for Ghostty, linked into place as `config.local` by the
+# Rakefile's :ghostty task. Loaded after the shared config, so anything here
+# wins.
+#
+# WHY font-size DIFFERS FROM macOS. Ghostty sizes text in points against the
+# display's logical resolution, and the same panel is presented differently by
+# the two systems: macOS gives the Pro Display XDR a 3008x1692 workspace,
+# Plasma at 200% gives 2560x1440 on the same glass. Each logical point is
+# therefore about 17% physically larger on Linux, so the shared size of 20
+# renders noticeably bigger than it does on a Mac.
+#
+# 16 is the rough parity value (20 / 1.175). Tune it to taste — this is one
+# number, and it is the only thing this file exists to set. For a machine that
+# wants something different again, drop a `config.local` of its own into the
+# Ghostty config directory; it is not tracked here and will simply win.
+font-size = 16
